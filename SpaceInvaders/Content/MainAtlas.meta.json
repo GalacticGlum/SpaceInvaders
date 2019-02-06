@@ -1,0 +1,11 @@
+[
+    {
+        "name": "player",
+        "rectangle": {
+            "X": 36,
+            "Y": 18,
+            "Width": 13,
+            "Height": 8
+        }
+    }
+]

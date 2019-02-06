@@ -7,13 +7,13 @@
  * Description: DESCRIPTION
  */
 
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using SpaceInvaders.ContentPipeline;
 
 namespace SpaceInvaders.Helpers
 {
@@ -45,24 +45,22 @@ namespace SpaceInvaders.Helpers
             textureAtlas = contentManager.Load<Texture2D>(atlasContentFilePath);
             textureAtlasEntries = new Dictionary<string, TextureAtlasEntry>();
 
-            string contentPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content");
-            string atlasMetaDataFilePath = Path.ChangeExtension(Path.Combine(contentPath, atlasContentFilePath), "json");
-
-            LoadMetaData(atlasMetaDataFilePath);
+            LoadMetaData(atlasContentFilePath, contentManager);
         }
 
-        public TextureAtlas(Texture2D textureAtlas, string atlasMetaDataFilePath, GraphicsDevice graphicsDevice)
+        public TextureAtlas(Texture2D textureAtlas, string atlasMetaDataFilePath, GraphicsDevice graphicsDevice, ContentManager contentManager)
         {
             this.graphicsDevice = graphicsDevice;
             this.textureAtlas = textureAtlas;
 
             textureAtlasEntries = new Dictionary<string, TextureAtlasEntry>();
-            LoadMetaData(atlasMetaDataFilePath);
+            LoadMetaData(atlasMetaDataFilePath, contentManager);
         }
 
-        private void LoadMetaData(string atlasMetaDataFilePath)
+        private void LoadMetaData(string atlasMetaDataFilePath, ContentManager contentManager)
         {
-            TextureAtlasEntry[] metaDataEntries = JsonConvert.DeserializeObject<TextureAtlasEntry[]>(atlasMetaDataFilePath);
+            string json = contentManager.Load<JsonObject>(Path.ChangeExtension(atlasMetaDataFilePath, "meta")).JsonSource;
+            TextureAtlasEntry[] metaDataEntries = JsonConvert.DeserializeObject<TextureAtlasEntry[]>(json);
             foreach (TextureAtlasEntry entry in metaDataEntries)
             {
                 textureAtlasEntries[entry.Name] = entry;

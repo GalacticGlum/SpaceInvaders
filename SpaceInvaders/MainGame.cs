@@ -7,6 +7,7 @@
  * Description: DESCRIPTION
  */
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -40,6 +41,7 @@ namespace SpaceInvaders
         /// </summary>
         private static readonly Vector2 HorizontalBoundaryEnd = new Vector2(GameScreenWidth - HorizontalBoundarySize, HorizontalBoundaryY);
 
+        private TextureAtlas mainTextureAtlas;
 
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -73,8 +75,7 @@ namespace SpaceInvaders
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            mainTextureAtlas = new TextureAtlas("MainAtlas", GraphicsDevice, Content);
         }
 
         /// <summary>
