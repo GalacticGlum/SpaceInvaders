@@ -11,7 +11,7 @@ namespace SpaceInvaders
         /// <summary>
         /// The amount of pixels between each enemy cell.
         /// </summary>
-        private const int Padding = 8;
+        private const int Padding = 10;
 
         private const int GridWidth = 11;
         private const int GridHeight = 5;
@@ -35,18 +35,18 @@ namespace SpaceInvaders
         /// </summary>
         private readonly int largestEnemyWidth;
 
-        private readonly int gridCellWidth;
-        private readonly int gridCellHeight;
+        private readonly float gridCellWidth;
+        private readonly float gridCellHeight;
 
         /// <summary>
         /// The total width of the enemy group in pixels, including padding.
         /// </summary>
-        private readonly int totalWidth;
+        private readonly float totalWidth;
 
         /// <summary>
         /// The total height of the enemy group in pixels, including padding.
         /// </summary>
-        private readonly int totalHeight;
+        private readonly float totalHeight;
 
         private readonly TextureAtlas textureAtlas;
 
@@ -94,7 +94,7 @@ namespace SpaceInvaders
                     Enemy enemy = enemyGrid[x, y];
                     Texture2D texture = textureAtlas[$"enemy_{enemy.Type.ToString()}_{1}"];
 
-                    float paddingX = (enemy.GridPosition.X - 1) * Padding;
+                    float paddingX = enemy.GridPosition.X * Padding;
 
                     // In order to centre the enemy horizontally within the grid cell,
                     // we need to account for the DIFFERENCE between the largest texture
@@ -102,7 +102,7 @@ namespace SpaceInvaders
                     float centeringOffsetX = (largestEnemyWidth - texture.Width) * 0.5f * MainGame.SpriteScaleFactor;
                     float offsetX = enemy.GridPosition.X * gridCellWidth + paddingX + centeringOffsetX;
 
-                    float paddingY = (enemy.GridPosition.Y - 1) * Padding;
+                    float paddingY = enemy.GridPosition.Y * Padding;
                     float offsetY = enemy.GridPosition.Y * gridCellHeight + paddingY;
 
                     spriteBatch.Draw(texture, position + new Vector2(offsetX, offsetY), null, Color.White, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);

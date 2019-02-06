@@ -25,7 +25,7 @@ namespace SpaceInvaders
         /// <summary>
         /// The scale factor of all game sprites.
         /// </summary>
-        public const int SpriteScaleFactor = 3;
+        public const float SpriteScaleFactor = 2.5f;
 
         /// <summary>
         /// The y-coordinate of the horizontal boundary line.

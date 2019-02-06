@@ -2,9 +2,9 @@
     {
         "name": "player",
         "rectangle": {
-            "X": 36,
-            "Y": 18,
-            "Width": 13,
+            "X": 8,
+            "Y": 23,
+            "Width": 15,
             "Height": 8
         }
     },
