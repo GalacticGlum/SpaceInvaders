@@ -104,6 +104,7 @@ namespace SpaceInvaders
             Input.Update();
 
             player.Update(deltaTime);
+            enemyGroup.Update(deltaTime);
         }
 
         /// <summary>

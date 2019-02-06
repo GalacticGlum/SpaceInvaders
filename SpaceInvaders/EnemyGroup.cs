@@ -56,6 +56,11 @@ namespace SpaceInvaders
         /// that the enemy is NOT dead).
         /// </summary>
         private readonly Enemy[,] enemyGrid;
+
+        private int direction = 1;
+        private float movementTimer;
+        private bool canVerticallyMove;
+
         private Vector2 position;
 
         public EnemyGroup(TextureAtlas textureAtlas)
@@ -83,6 +88,30 @@ namespace SpaceInvaders
             totalHeight = gridCellHeight * gridCellHeight + (GridHeight - 1) * Padding;
 
             position = new Vector2((MainGame.GameScreenWidth - totalWidth) * 0.5f, MainGame.GameScreenHeight * 0.25f);
+        }
+
+        public void Update(float deltaTime)
+        {
+            movementTimer += deltaTime;
+
+            if (movementTimer >= 0.25f)
+            {
+                if ((position.X == MainGame.HorizontalBoundaryStart.X || position.X + totalWidth == MainGame.HorizontalBoundaryEnd.X) && canVerticallyMove)
+                {
+                    direction *= -1;
+                    position.Y += 5;
+                    canVerticallyMove = false;
+                }
+                else
+                {
+                    position.X += 5 * direction;
+                    canVerticallyMove = true;
+                }
+
+                movementTimer = 0;
+            }
+
+            position.X = MathHelper.Clamp(position.X, MainGame.HorizontalBoundaryStart.X, MainGame.HorizontalBoundaryEnd.X - totalWidth);
         }
 
         public void Draw(SpriteBatch spriteBatch)
