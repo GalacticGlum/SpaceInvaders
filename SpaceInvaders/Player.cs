@@ -1,4 +1,12 @@
-﻿using System;
+﻿/*
+ * Author: Shon Verch
+ * File Name: Player.cs
+ * Project Name: SpaceInvaders
+ * Creation Date: 02/05/2019
+ * Modified Date: 02/05/2019
+ * Description: DESCRIPTION
+ */
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -54,9 +62,7 @@ namespace SpaceInvaders
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             spriteBatch.Draw(playerTexture, position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
-            spriteBatch.End();
         }
     }
 }

@@ -51,7 +51,9 @@ namespace SpaceInvaders
 
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+
         private Player player;
+        private EnemyGroup enemyGroup;
         
         public MainGame()
         {
@@ -74,6 +76,7 @@ namespace SpaceInvaders
             graphics.ApplyChanges();
 
             player = new Player(MainTextureAtlas);
+            enemyGroup = new EnemyGroup(MainTextureAtlas);
         }
 
         /// <summary>
@@ -111,11 +114,13 @@ namespace SpaceInvaders
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             spriteBatch.DrawLine(HorizontalBoundaryStart, HorizontalBoundaryEnd, ColourHelpers.PureGreen, 2);
-            spriteBatch.End();
 
             player.Draw(spriteBatch);
+            enemyGroup.Draw(spriteBatch);
+
+            spriteBatch.End();
         }
     }
 }

@@ -42,6 +42,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Enemy.cs" />
+    <Compile Include="EnemyGroup.cs" />
+    <Compile Include="EnemyType.cs" />
     <Compile Include="Helpers\ColourHelpers.cs" />
     <Compile Include="Helpers\PrimitiveDrawingHelper.cs" />
     <Compile Include="Helpers\TextureAtlas.cs" />
