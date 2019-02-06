@@ -46,7 +46,9 @@
     <Compile Include="Helpers\PrimitiveDrawingHelper.cs" />
     <Compile Include="Helpers\TextureAtlas.cs" />
     <Compile Include="Helpers\TextureHelpers.cs" />
+    <Compile Include="Input.cs" />
     <Compile Include="MainGame.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
