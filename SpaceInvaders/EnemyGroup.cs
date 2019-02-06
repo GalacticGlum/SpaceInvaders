@@ -96,7 +96,8 @@ namespace SpaceInvaders
 
             if (movementTimer >= 0.25f)
             {
-                if ((position.X == MainGame.HorizontalBoundaryStart.X || position.X + totalWidth == MainGame.HorizontalBoundaryEnd.X) && canVerticallyMove)
+                bool isTouchingHorizontalBounds = position.X == MainGame.HorizontalBoundaryStart.X || position.X == MainGame.HorizontalBoundaryEnd.X - totalWidth;
+                if (canVerticallyMove && isTouchingHorizontalBounds)
                 {
                     direction *= -1;
                     position.Y += 5;
@@ -111,6 +112,7 @@ namespace SpaceInvaders
                 movementTimer = 0;
             }
 
+            // Make sure our horizontal position does not exceed the horizontal boundary
             position.X = MathHelper.Clamp(position.X, MainGame.HorizontalBoundaryStart.X, MainGame.HorizontalBoundaryEnd.X - totalWidth);
         }
 
