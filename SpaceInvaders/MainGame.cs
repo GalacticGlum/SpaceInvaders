@@ -76,11 +76,6 @@ namespace SpaceInvaders
             graphics.PreferredBackBufferWidth = GameScreenWidth;
             graphics.PreferredBackBufferHeight = GameScreenHeight;
             graphics.ApplyChanges();
-
-            player = new Player(MainTextureAtlas);
-            enemyGroup = new EnemyGroup(MainTextureAtlas, Content);
-
-            new Barrier(Vector2.Zero, Content);
         }
 
         /// <summary>
@@ -92,6 +87,14 @@ namespace SpaceInvaders
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             MainTextureAtlas = new TextureAtlas("MainAtlas", GraphicsDevice, Content);
+
+            // Load all the enemy types
+            EnemyType.Load(Content);
+
+            player = new Player(MainTextureAtlas);
+            enemyGroup = new EnemyGroup(MainTextureAtlas, Content);
+
+            new Barrier(Vector2.Zero, Content);
         }
 
         /// <summary>

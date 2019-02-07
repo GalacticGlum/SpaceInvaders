@@ -123,7 +123,7 @@ namespace SpaceInvaders
             // We want the size of each grid cell to be the same so we need to find
             // the width of the largest texture; all other textures will be horizontally centered
             // in the grid cell according to the largest width. The height of all enemies is the same.
-            largestEnemyWidth = Enum.GetNames(typeof(EnemyType)).Select(name => textureAtlas[$"enemy_{name}_1"].Width).Max();
+            largestEnemyWidth = EnemyType.All().Select(type => textureAtlas[$"enemy_{type}_1"].Width).Max();
 
             groupCellWidth = largestEnemyWidth * MainGame.SpriteScaleFactor;
             groupCellHeight = textureAtlas["enemy_Big_1"].Height * MainGame.SpriteScaleFactor;
@@ -144,7 +144,15 @@ namespace SpaceInvaders
         private static EnemyType[] LoadEnemyTypeLayers(ContentManager contentManager)
         {
             string json = contentManager.Load<JsonObject>("EnemyTypeLayers").JsonSource;
-            return JsonConvert.DeserializeObject<EnemyType[]>(json);
+            string[] enemyTypeNames = JsonConvert.DeserializeObject<string[]>(json);
+
+            EnemyType[] enemyTypes = new EnemyType[enemyTypeNames.Length];
+            for (int i = 0; i < enemyTypes.Length; i++)
+            {
+                enemyTypes[i] = EnemyType.Parse(enemyTypeNames[i]);
+            }
+
+            return enemyTypes;
         }
 
         /// <summary>
@@ -188,7 +196,7 @@ namespace SpaceInvaders
                 for (int x = 0; x < GroupWidth; x++)
                 {
                     Enemy enemy = enemyGrid[x, y];
-                    Texture2D texture = textureAtlas[$"enemy_{enemy.Type.ToString()}_{animationFrameCounter + 1}"];
+                    Texture2D texture = textureAtlas[$"enemy_{enemy.Type}_{animationFrameCounter + 1}"];
 
                     float paddingX = enemy.Position.X * Padding;
 

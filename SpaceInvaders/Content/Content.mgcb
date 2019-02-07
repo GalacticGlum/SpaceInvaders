@@ -24,6 +24,11 @@
 /processor:JsonProcessor
 /build:EnemyTypeLayers.json
 
+#begin EnemyTypes.json
+/importer:JsonImporter
+/processor:JsonProcessor
+/build:EnemyTypes.json
+
 #begin MainAtlas.meta.json
 /importer:JsonImporter
 /processor:JsonProcessor

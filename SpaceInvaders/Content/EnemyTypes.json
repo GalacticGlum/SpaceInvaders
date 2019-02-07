@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Small",
+        "points": 40
+    },
+    {
+        "name": "Medium",
+        "points": 20
+    },
+    {
+        "name": "Big",
+        "points": 10
+    }
+]
