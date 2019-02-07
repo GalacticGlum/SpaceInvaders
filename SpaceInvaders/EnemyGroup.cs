@@ -43,7 +43,7 @@ namespace SpaceInvaders
         /// <summary>
         /// The number of pixels to move horizontally.
         /// </summary>
-        private const float HorizontalMovementShift = 1;
+        private const float HorizontalMovementShift = 2;
 
         /// <summary>
         /// The number of pixels to move vertically when an enemy touches the horizontal boundary.
@@ -112,6 +112,8 @@ namespace SpaceInvaders
         private float timeToMovement;
         private bool canVerticallyMove;
 
+        private int animationFrameCounter;
+
         public EnemyGroup(TextureAtlas textureAtlas)
         {
             this.textureAtlas = textureAtlas;
@@ -160,6 +162,7 @@ namespace SpaceInvaders
                 }
 
                 timeToMovement = GetMovementTimeCurve();
+                animationFrameCounter = (animationFrameCounter + 1) % 2;
             }
 
             // Make sure our horizontal position does not exceed the horizontal boundary
@@ -173,7 +176,7 @@ namespace SpaceInvaders
                 for (int x = 0; x < GroupWidth; x++)
                 {
                     Enemy enemy = enemyGrid[x, y];
-                    Texture2D texture = textureAtlas[$"enemy_{enemy.Type.ToString()}_{1}"];
+                    Texture2D texture = textureAtlas[$"enemy_{enemy.Type.ToString()}_{animationFrameCounter + 1}"];
 
                     float paddingX = enemy.GridPosition.X * Padding;
 
@@ -203,7 +206,7 @@ namespace SpaceInvaders
         private float GetMovementTimeCurve()
         {
             float r = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGroupEnemies + remainingEnemyCount + 1, 3));
-            float e = 2 * r - 0.5f;
+            float e = 2.5f * r - 0.625f;
 
             return 1 / e;
         }
