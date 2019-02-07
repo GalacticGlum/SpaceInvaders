@@ -1,8 +1,19 @@
-﻿using System;
+﻿/*
+ * Author: Shon Verch
+ * File Name: EnemyGroup.cs
+ * Project Name: SpaceInvaders
+ * Creation Date: 02/05/2019
+ * Modified Date: 02/06/2019
+ * Description: DESCRIPTION
+ */
+
+using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceInvaders.Helpers;
+using MathHelper = SpaceInvaders.Helpers.MathHelper;
+using MonoGameMathHelper = Microsoft.Xna.Framework.MathHelper;
 
 namespace SpaceInvaders
 {
@@ -15,6 +26,7 @@ namespace SpaceInvaders
 
         private const int GridWidth = 11;
         private const int GridHeight = 5;
+        private const int TotalGridCells = GridWidth * GridHeight;
 
         /// <summary>
         /// The layers of the enemy grid.
@@ -57,11 +69,16 @@ namespace SpaceInvaders
         /// </summary>
         private readonly Enemy[,] enemyGrid;
 
-        private int direction = 1;
-        private float movementTimer;
-        private bool canVerticallyMove;
+        /// <summary>
+        /// The number of enemies in this <see cref="EnemyGroup"/> that are not dead.
+        /// </summary>
+        private readonly int remainingEnemyCount;
 
         private Vector2 position;
+
+        private int movementDirection = 1;
+        private float timeToMovement;
+        private bool canVerticallyMove;
 
         public EnemyGroup(TextureAtlas textureAtlas)
         {
@@ -87,33 +104,34 @@ namespace SpaceInvaders
             totalWidth = GridWidth * gridCellWidth + (GridWidth - 1) * Padding;
             totalHeight = gridCellHeight * gridCellHeight + (GridHeight - 1) * Padding;
 
+            remainingEnemyCount = GridWidth * GridHeight;
             position = new Vector2((MainGame.GameScreenWidth - totalWidth) * 0.5f, MainGame.GameScreenHeight * 0.25f);
+            timeToMovement = GetMovementTimeCurve();
         }
 
         public void Update(float deltaTime)
         {
-            movementTimer += deltaTime;
-
-            if (movementTimer >= 0.25f)
+            timeToMovement -= deltaTime;
+            if (timeToMovement <= 0)
             {
                 bool isTouchingHorizontalBounds = position.X == MainGame.HorizontalBoundaryStart.X || position.X == MainGame.HorizontalBoundaryEnd.X - totalWidth;
                 if (canVerticallyMove && isTouchingHorizontalBounds)
                 {
-                    direction *= -1;
+                    movementDirection *= -1;
                     position.Y += 5;
                     canVerticallyMove = false;
                 }
                 else
                 {
-                    position.X += 5 * direction;
+                    position.X += 5 * movementDirection;
                     canVerticallyMove = true;
                 }
 
-                movementTimer = 0;
+                timeToMovement = GetMovementTimeCurve();
             }
 
             // Make sure our horizontal position does not exceed the horizontal boundary
-            position.X = MathHelper.Clamp(position.X, MainGame.HorizontalBoundaryStart.X, MainGame.HorizontalBoundaryEnd.X - totalWidth);
+            position.X = MonoGameMathHelper.Clamp(position.X, MainGame.HorizontalBoundaryStart.X, MainGame.HorizontalBoundaryEnd.X - totalWidth);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -139,6 +157,24 @@ namespace SpaceInvaders
                     spriteBatch.Draw(texture, position + new Vector2(offsetX, offsetY), null, Color.White, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
                 }
             }
+        }
+
+        /// <summary>
+        /// <para>
+        /// Gets the time between movements, in seconds, implemented as a rational function.
+        /// For the full equation, see <see href="https://www.desmos.com/calculator/5oxp18dplc"></see>.
+        /// </para>
+        /// This implementation uses a simplified version of the one on Desmos to leverage a fast inverse
+        /// square root operation.
+        /// </summary>
+        /// <returns>The time, in seconds, until the next movement.</returns>
+        private float GetMovementTimeCurve()
+        {
+            float r = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGridCells + remainingEnemyCount + 1, 3));
+            float e = 2 * r - 0.5f;
+
+            Console.WriteLine(1 / e);
+            return 1 / e;
         }
     }
 }

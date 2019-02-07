@@ -24,6 +24,8 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>false</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <OutputPath>bin\$(MonoGamePlatform)\$(Platform)\$(Configuration)\</OutputPath>
@@ -46,6 +48,7 @@
     <Compile Include="EnemyGroup.cs" />
     <Compile Include="EnemyType.cs" />
     <Compile Include="Helpers\ColourHelpers.cs" />
+    <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\PrimitiveDrawingHelper.cs" />
     <Compile Include="Helpers\TextureAtlas.cs" />
     <Compile Include="Helpers\TextureHelpers.cs" />

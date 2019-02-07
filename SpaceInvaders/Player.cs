@@ -12,6 +12,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpaceInvaders.Helpers;
 
+using MathHelper = Microsoft.Xna.Framework.MathHelper;
+
 namespace SpaceInvaders
 {
     public class Player
