@@ -11,6 +11,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceInvaders.Helpers;
+using SpaceInvaders.Logging;
 
 namespace SpaceInvaders
 {
@@ -76,6 +77,8 @@ namespace SpaceInvaders
             graphics.PreferredBackBufferWidth = GameScreenWidth;
             graphics.PreferredBackBufferHeight = GameScreenHeight;
             graphics.ApplyChanges();
+
+            Logger.Destination = LoggerDestination.File;
         }
 
         /// <summary>

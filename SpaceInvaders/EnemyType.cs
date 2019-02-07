@@ -12,6 +12,7 @@ using System.Linq;
 using Microsoft.Xna.Framework.Content;
 using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
+using SpaceInvaders.Logging;
 
 namespace SpaceInvaders
 {
@@ -55,6 +56,7 @@ namespace SpaceInvaders
         public static EnemyType Parse(string name)
         {
             if (enemyTypeNameMap.ContainsKey(name)) return enemyTypeNameMap[name];
+            Logger.LogFunctionEntry(string.Empty, $"Enemy Type \"{name}\" could not be found!", LoggerVerbosity.Warning);
             return None;
         }
 
@@ -62,6 +64,7 @@ namespace SpaceInvaders
         {
             if (enemyTypeNameMap.ContainsKey(enemyType.Name))
             {
+                Logger.LogFunctionEntry(string.Empty, $"Enemy Type \"{enemyType.Name}\" already exists!", LoggerVerbosity.Warning);
                 return;
             }
 

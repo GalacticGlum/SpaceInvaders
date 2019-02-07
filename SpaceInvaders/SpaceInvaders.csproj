@@ -52,9 +52,13 @@
     <Compile Include="Helpers\ColourHelpers.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\PrimitiveDrawingHelper.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\TextureAtlas.cs" />
     <Compile Include="Helpers\TextureHelpers.cs" />
     <Compile Include="Input.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LoggerDestination.cs" />
+    <Compile Include="Logging\LoggerVerbosity.cs" />
     <Compile Include="MainGame.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
