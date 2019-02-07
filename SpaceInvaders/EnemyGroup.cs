@@ -12,6 +12,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceInvaders.Helpers;
+
 using MathHelper = SpaceInvaders.Helpers.MathHelper;
 using MonoGameMathHelper = Microsoft.Xna.Framework.MathHelper;
 
@@ -24,9 +25,30 @@ namespace SpaceInvaders
         /// </summary>
         private const int Padding = 10;
 
-        private const int GridWidth = 11;
-        private const int GridHeight = 5;
-        private const int TotalGridCells = GridWidth * GridHeight;
+        /// <summary>
+        /// The amount of enemies in each row.
+        /// </summary>
+        private const int GroupWidth = 11;
+
+        /// <summary>
+        /// The amount of enemies in each column.
+        /// </summary>
+        private const int GroupHeight = 5;
+        
+        /// <summary>
+        /// The total number of enemies in an <see cref="EnemyGroup"/>.
+        /// </summary>
+        private const int TotalGroupEnemies = GroupWidth * GroupHeight;
+
+        /// <summary>
+        /// The number of pixels to move horizontally.
+        /// </summary>
+        private const float HorizontalMovementShift = 1;
+
+        /// <summary>
+        /// The number of pixels to move vertically when an enemy touches the horizontal boundary.
+        /// </summary>
+        private const float VerticalMovementShift = 5;
 
         /// <summary>
         /// The layers of the enemy grid.
@@ -47,16 +69,23 @@ namespace SpaceInvaders
         /// </summary>
         private readonly int largestEnemyWidth;
 
-        private readonly float gridCellWidth;
-        private readonly float gridCellHeight;
+        /// <summary>
+        /// The width of an individual cell in this <see cref="EnemyGroup"/> in pixels.
+        /// </summary>
+        private readonly float groupCellWidth;
 
         /// <summary>
-        /// The total width of the enemy group in pixels, including padding.
+        /// The height of an individual cell in this <see cref="EnemyGroup"/> in pixels.
+        /// </summary>
+        private readonly float groupCellHeight;
+
+        /// <summary>
+        /// The total width of this <see cref="EnemyGroup"/> in pixels, including padding.
         /// </summary>
         private readonly float totalWidth;
 
         /// <summary>
-        /// The total height of the enemy group in pixels, including padding.
+        /// The total height of this <see cref="EnemyGroup"/> in pixels, including padding.
         /// </summary>
         private readonly float totalHeight;
 
@@ -74,6 +103,9 @@ namespace SpaceInvaders
         /// </summary>
         private readonly int remainingEnemyCount;
 
+        /// <summary>
+        /// The position of this <see cref="EnemyGroup"/> relative to the top-left.
+        /// </summary>
         private Vector2 position;
 
         private int movementDirection = 1;
@@ -84,10 +116,10 @@ namespace SpaceInvaders
         {
             this.textureAtlas = textureAtlas;
 
-            enemyGrid = new Enemy[GridWidth, GridHeight];
-            for (int y = 0; y < GridHeight; y++)
+            enemyGrid = new Enemy[GroupWidth, GroupHeight];
+            for (int y = 0; y < GroupHeight; y++)
             {
-                for (int x = 0; x < GridWidth; x++)
+                for (int x = 0; x < GroupWidth; x++)
                 {
                     enemyGrid[x, y] = new Enemy(new Vector2(x, y), enemyTypeLayers[y]);
                 }
@@ -98,13 +130,13 @@ namespace SpaceInvaders
             // in the grid cell according to the largest width. The height of all enemies is the same.
             largestEnemyWidth = Enum.GetNames(typeof(EnemyType)).Select(name => textureAtlas[$"enemy_{name}_1"].Width).Max();
 
-            gridCellWidth = largestEnemyWidth * MainGame.SpriteScaleFactor;
-            gridCellHeight = textureAtlas["enemy_Big_1"].Height * MainGame.SpriteScaleFactor;
+            groupCellWidth = largestEnemyWidth * MainGame.SpriteScaleFactor;
+            groupCellHeight = textureAtlas["enemy_Big_1"].Height * MainGame.SpriteScaleFactor;
 
-            totalWidth = GridWidth * gridCellWidth + (GridWidth - 1) * Padding;
-            totalHeight = gridCellHeight * gridCellHeight + (GridHeight - 1) * Padding;
+            totalWidth = GroupWidth * groupCellWidth + (GroupWidth - 1) * Padding;
+            totalHeight = groupCellHeight * groupCellHeight + (GroupHeight - 1) * Padding;
 
-            remainingEnemyCount = GridWidth * GridHeight;
+            remainingEnemyCount = TotalGroupEnemies;
             position = new Vector2((MainGame.GameScreenWidth - totalWidth) * 0.5f, MainGame.GameScreenHeight * 0.25f);
             timeToMovement = GetMovementTimeCurve();
         }
@@ -118,12 +150,12 @@ namespace SpaceInvaders
                 if (canVerticallyMove && isTouchingHorizontalBounds)
                 {
                     movementDirection *= -1;
-                    position.Y += 5;
+                    position.Y += VerticalMovementShift * MainGame.SpriteScaleFactor;
                     canVerticallyMove = false;
                 }
                 else
                 {
-                    position.X += 5 * movementDirection;
+                    position.X += HorizontalMovementShift * MainGame.SpriteScaleFactor * movementDirection;
                     canVerticallyMove = true;
                 }
 
@@ -136,9 +168,9 @@ namespace SpaceInvaders
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            for (int y = 0; y < GridHeight; y++)
+            for (int y = 0; y < GroupHeight; y++)
             {
-                for (int x = 0; x < GridWidth; x++)
+                for (int x = 0; x < GroupWidth; x++)
                 {
                     Enemy enemy = enemyGrid[x, y];
                     Texture2D texture = textureAtlas[$"enemy_{enemy.Type.ToString()}_{1}"];
@@ -149,10 +181,10 @@ namespace SpaceInvaders
                     // we need to account for the DIFFERENCE between the largest texture
                     // width and the current texture width.
                     float centeringOffsetX = (largestEnemyWidth - texture.Width) * 0.5f * MainGame.SpriteScaleFactor;
-                    float offsetX = enemy.GridPosition.X * gridCellWidth + paddingX + centeringOffsetX;
+                    float offsetX = enemy.GridPosition.X * groupCellWidth + paddingX + centeringOffsetX;
 
                     float paddingY = enemy.GridPosition.Y * Padding;
-                    float offsetY = enemy.GridPosition.Y * gridCellHeight + paddingY;
+                    float offsetY = enemy.GridPosition.Y * groupCellHeight + paddingY;
 
                     spriteBatch.Draw(texture, position + new Vector2(offsetX, offsetY), null, Color.White, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
                 }
@@ -170,7 +202,7 @@ namespace SpaceInvaders
         /// <returns>The time, in seconds, until the next movement.</returns>
         private float GetMovementTimeCurve()
         {
-            float r = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGridCells + remainingEnemyCount + 1, 3));
+            float r = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGroupEnemies + remainingEnemyCount + 1, 3));
             float e = 2 * r - 0.5f;
 
             return 1 / e;
