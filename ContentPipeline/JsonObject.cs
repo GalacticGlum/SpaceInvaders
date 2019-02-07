@@ -4,11 +4,16 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
  * Modified Date: 02/05/2019
- * Description: DESCRIPTION
+ * Description: A data object containing the result of the JsonReader.
+ *              This type is used in Content.Load calls.
  */
 
 namespace SpaceInvaders.ContentPipeline
 {
+    /// <summary>
+    /// A data object containing the result of the <see cref="JsonReader"/>.
+    /// This type is used in <c>Content.Load</c> calls.
+    /// </summary>
     public class JsonObject
     {
         public string JsonSource { get; }

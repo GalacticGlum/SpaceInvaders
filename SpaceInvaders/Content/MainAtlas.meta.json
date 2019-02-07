@@ -61,5 +61,185 @@
             "Width": 8,
             "Height": 8
         }
+    },
+    {
+        "name":"barrier_A_1",
+        "rectangle": {
+            "X": 145,
+            "Y": 3,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_A_2",
+        "rectangle": {
+            "X": 153,
+            "Y": 3,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_A_3",
+        "rectangle": {
+            "X": 161,
+            "Y": 3,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_A_4",
+        "rectangle": {
+            "X": 169,
+            "Y": 3,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_B_1",
+        "rectangle": {
+            "X": 145,
+            "Y": 9,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_B_2",
+        "rectangle": {
+            "X": 153,
+            "Y": 9,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_B_3",
+        "rectangle": {
+            "X": 161,
+            "Y": 9,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_B_4",
+        "rectangle": {
+            "X": 169,
+            "Y": 9,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_C_1",
+        "rectangle": {
+            "X": 145,
+            "Y": 15,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_C_2",
+        "rectangle": {
+            "X": 153,
+            "Y": 15,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_C_3",
+        "rectangle": {
+            "X": 161,
+            "Y": 15,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_C_4",
+        "rectangle": {
+            "X": 169,
+            "Y": 15,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_D_1",
+        "rectangle": {
+            "X": 145,
+            "Y": 21,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_D_2",
+        "rectangle": {
+            "X": 153,
+            "Y": 21,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_D_3",
+        "rectangle": {
+            "X": 161,
+            "Y": 21,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_D_4",
+        "rectangle": {
+            "X": 169,
+            "Y": 21,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_E_1",
+        "rectangle": {
+            "X": 145,
+            "Y": 27,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_E_2",
+        "rectangle": {
+            "X": 153,
+            "Y": 27,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_E_3",
+        "rectangle": {
+            "X": 161,
+            "Y": 27,
+            "Width": 5,
+            "Height": 5
+        }
+    },
+    {
+        "name":"barrier_E_4",
+        "rectangle": {
+            "X": 169,
+            "Y": 27,
+            "Width": 5,
+            "Height": 5
+        }
     }
 ]

@@ -44,6 +44,8 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Barrier.cs" />
+    <Compile Include="BarrierTile.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemyGroup.cs" />
     <Compile Include="EnemyType.cs" />

@@ -4,13 +4,16 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
  * Modified Date: 02/06/2019
- * Description: DESCRIPTION
+ * Description: The top-level logic manager for all enemies.
  */
 
 using System;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
+using SpaceInvaders.ContentPipeline;
 using SpaceInvaders.Helpers;
 
 using MathHelper = SpaceInvaders.Helpers.MathHelper;
@@ -18,6 +21,9 @@ using MonoGameMathHelper = Microsoft.Xna.Framework.MathHelper;
 
 namespace SpaceInvaders
 {
+    /// <summary>
+    /// The top-level logic manager for all enemies.
+    /// </summary>
     public class EnemyGroup
     {
         /// <summary>
@@ -49,20 +55,6 @@ namespace SpaceInvaders
         /// The number of pixels to move vertically when an enemy touches the horizontal boundary.
         /// </summary>
         private const float VerticalMovementShift = 5;
-
-        /// <summary>
-        /// The layers of the enemy grid.
-        /// The i-th element of this array indicates the type of all the enemies
-        /// on the i-th row of the enemy grid.
-        /// </summary>
-        private static readonly EnemyType[] enemyTypeLayers =
-        {
-            EnemyType.Small,
-            EnemyType.Medium,
-            EnemyType.Medium,
-            EnemyType.Big,
-            EnemyType.Big
-        };
 
         /// <summary>
         /// The width of the enemy with the largest width, in pixels.
@@ -114,11 +106,12 @@ namespace SpaceInvaders
 
         private int animationFrameCounter;
 
-        public EnemyGroup(TextureAtlas textureAtlas)
+        public EnemyGroup(TextureAtlas textureAtlas, ContentManager contentManager)
         {
             this.textureAtlas = textureAtlas;
 
             enemyGrid = new Enemy[GroupWidth, GroupHeight];
+            EnemyType[] enemyTypeLayers = LoadEnemyTypeLayers(contentManager);
             for (int y = 0; y < GroupHeight; y++)
             {
                 for (int x = 0; x < GroupWidth; x++)
@@ -143,6 +136,21 @@ namespace SpaceInvaders
             timeToMovement = GetMovementTimeCurve();
         }
 
+        /// <summary>
+        /// Loads the enemy type layers from a content file.
+        /// </summary>
+        /// <param name="contentManager">The <see cref="ContentManager"/> context.</param>
+        /// <returns>An array of enemy types containing the enemy type layers.</returns>
+        private static EnemyType[] LoadEnemyTypeLayers(ContentManager contentManager)
+        {
+            string json = contentManager.Load<JsonObject>("EnemyTypeLayers").JsonSource;
+            return JsonConvert.DeserializeObject<EnemyType[]>(json);
+        }
+
+        /// <summary>
+        /// Simulates the gameplay logic for this <see cref="EnemyGroup"/>.
+        /// </summary>
+        /// <param name="deltaTime">The elapsed time between this frame and the last frame, in seconds.</param>
         public void Update(float deltaTime)
         {
             timeToMovement -= deltaTime;
@@ -169,6 +177,10 @@ namespace SpaceInvaders
             position.X = MonoGameMathHelper.Clamp(position.X, MainGame.HorizontalBoundaryStart.X, MainGame.HorizontalBoundaryEnd.X - totalWidth);
         }
 
+        /// <summary>
+        /// Renders this <see cref="EnemyGroup"/>.
+        /// </summary>
+        /// <param name="spriteBatch">The <see cref="SpriteBatch"/> context.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             for (int y = 0; y < GroupHeight; y++)
@@ -178,16 +190,16 @@ namespace SpaceInvaders
                     Enemy enemy = enemyGrid[x, y];
                     Texture2D texture = textureAtlas[$"enemy_{enemy.Type.ToString()}_{animationFrameCounter + 1}"];
 
-                    float paddingX = enemy.GridPosition.X * Padding;
+                    float paddingX = enemy.Position.X * Padding;
 
                     // In order to centre the enemy horizontally within the grid cell,
                     // we need to account for the DIFFERENCE between the largest texture
                     // width and the current texture width.
                     float centeringOffsetX = (largestEnemyWidth - texture.Width) * 0.5f * MainGame.SpriteScaleFactor;
-                    float offsetX = enemy.GridPosition.X * groupCellWidth + paddingX + centeringOffsetX;
+                    float offsetX = enemy.Position.X * groupCellWidth + paddingX + centeringOffsetX;
 
-                    float paddingY = enemy.GridPosition.Y * Padding;
-                    float offsetY = enemy.GridPosition.Y * groupCellHeight + paddingY;
+                    float paddingY = enemy.Position.Y * Padding;
+                    float offsetY = enemy.Position.Y * groupCellHeight + paddingY;
 
                     spriteBatch.Draw(texture, position + new Vector2(offsetX, offsetY), null, Color.White, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
                 }
@@ -205,10 +217,12 @@ namespace SpaceInvaders
         /// <returns>The time, in seconds, until the next movement.</returns>
         private float GetMovementTimeCurve()
         {
-            float r = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGroupEnemies + remainingEnemyCount + 1, 3));
-            float e = 2.5f * r - 0.625f;
-
-            return 1 / e;
+            // The value of h(x) = 1000 / ((T + 1 - x)^3)
+            // where T is the total enemy count and x is the remaining enemy count.
+            float hx = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGroupEnemies + remainingEnemyCount + 1, 3));
+            
+            // m(x) = 1 / 2.5(h(x) - 0.25)
+            return 1 / (2.5f * hx - 0.625f);
         }
     }
 }
