@@ -79,6 +79,8 @@ namespace SpaceInvaders
 
             player = new Player(MainTextureAtlas);
             enemyGroup = new EnemyGroup(MainTextureAtlas, Content);
+
+            new Barrier(Vector2.Zero, Content);
         }
 
         /// <summary>
