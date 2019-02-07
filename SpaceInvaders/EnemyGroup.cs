@@ -173,7 +173,6 @@ namespace SpaceInvaders
             float r = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGridCells + remainingEnemyCount + 1, 3));
             float e = 2 * r - 0.5f;
 
-            Console.WriteLine(1 / e);
             return 1 / e;
         }
     }
