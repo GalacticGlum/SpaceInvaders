@@ -3,7 +3,7 @@
  * File Name: EnemyGroup.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/06/2019
+ * Modified Date: 02/07/2019
  * Description: The top-level logic manager for all enemies.
  */
 
