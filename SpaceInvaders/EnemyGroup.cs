@@ -81,8 +81,6 @@ namespace SpaceInvaders
         /// </summary>
         private readonly float totalHeight;
 
-        private readonly TextureAtlas textureAtlas;
-
         /// <summary>
         /// A 2D array where the (x, y) element indicates whether
         /// the enemy at that position is dead (where true indicates
@@ -96,7 +94,7 @@ namespace SpaceInvaders
         private readonly int remainingEnemyCount;
 
         /// <summary>
-        /// The position of this <see cref="EnemyGroup"/> relative to the top-left.
+        /// The position of this <see cref="EnemyGroup"/>.
         /// </summary>
         private Vector2 position;
 
@@ -106,12 +104,10 @@ namespace SpaceInvaders
 
         private int animationFrameCounter;
 
-        public EnemyGroup(TextureAtlas textureAtlas, ContentManager contentManager)
+        public EnemyGroup()
         {
-            this.textureAtlas = textureAtlas;
-
             enemyGrid = new Enemy[GroupWidth, GroupHeight];
-            EnemyType[] enemyTypeLayers = LoadEnemyTypeLayers(contentManager);
+            EnemyType[] enemyTypeLayers = LoadEnemyTypeLayers();
             for (int y = 0; y < GroupHeight; y++)
             {
                 for (int x = 0; x < GroupWidth; x++)
@@ -123,10 +119,10 @@ namespace SpaceInvaders
             // We want the size of each grid cell to be the same so we need to find
             // the width of the largest texture; all other textures will be horizontally centered
             // in the grid cell according to the largest width. The height of all enemies is the same.
-            largestEnemyWidth = EnemyType.All().Select(type => textureAtlas[$"enemy_{type}_1"].Width).Max();
+            largestEnemyWidth = EnemyType.All().Select(type => MainGame.Context.MainTextureAtlas[$"enemy_{type}_1"].Width).Max();
 
             groupCellWidth = largestEnemyWidth * MainGame.SpriteScaleFactor;
-            groupCellHeight = textureAtlas["enemy_Big_1"].Height * MainGame.SpriteScaleFactor;
+            groupCellHeight = MainGame.Context.MainTextureAtlas["enemy_Big_1"].Height * MainGame.SpriteScaleFactor;
 
             totalWidth = GroupWidth * groupCellWidth + (GroupWidth - 1) * Padding;
             totalHeight = groupCellHeight * groupCellHeight + (GroupHeight - 1) * Padding;
@@ -141,9 +137,9 @@ namespace SpaceInvaders
         /// </summary>
         /// <param name="contentManager">The <see cref="ContentManager"/> context.</param>
         /// <returns>An array of enemy types containing the enemy type layers.</returns>
-        private static EnemyType[] LoadEnemyTypeLayers(ContentManager contentManager)
+        private static EnemyType[] LoadEnemyTypeLayers()
         {
-            string json = contentManager.Load<JsonObject>("EnemyTypeLayers").JsonSource;
+            string json = MainGame.Context.Content.Load<JsonObject>("EnemyTypeLayers").JsonSource;
             string[] enemyTypeNames = JsonConvert.DeserializeObject<string[]>(json);
 
             EnemyType[] enemyTypes = new EnemyType[enemyTypeNames.Length];
@@ -196,7 +192,7 @@ namespace SpaceInvaders
                 for (int x = 0; x < GroupWidth; x++)
                 {
                     Enemy enemy = enemyGrid[x, y];
-                    Texture2D texture = textureAtlas[$"enemy_{enemy.Type}_{animationFrameCounter + 1}"];
+                    Texture2D texture = MainGame.Context.MainTextureAtlas[$"enemy_{enemy.Type}_{animationFrameCounter + 1}"];
 
                     float paddingX = enemy.Position.X * Padding;
 
@@ -209,7 +205,8 @@ namespace SpaceInvaders
                     float paddingY = enemy.Position.Y * Padding;
                     float offsetY = enemy.Position.Y * groupCellHeight + paddingY;
 
-                    spriteBatch.Draw(texture, position + new Vector2(offsetX, offsetY), null, Color.White, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
+                    spriteBatch.Draw(texture, position + new Vector2(offsetX, offsetY), null, Color.White, 0, 
+                        Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
                 }
             }
         }

@@ -19,14 +19,19 @@ namespace SpaceInvaders
     public class Player
     {
         /// <summary>
+        /// The amount of pixels to spawn above the horizontal boundary line.
+        /// </summary>
+        public const int VerticalSpawnOffset = 29;
+
+        /// <summary>
         /// The horizontal speed in pixels per second.
         /// </summary>
         private const int HorizontalSpeed = 5;
 
         /// <summary>
-        /// The amount of pixels to spawn above the horizontal boundary line.
+        /// The position of this <see cref="Player"/>.
         /// </summary>
-        private const int VerticalSpawnOffset = 29;
+        public Vector2 Position { get; private set; }
 
         /// <summary>
         /// The maximum horizontal coordinate that the player cannot go beyond.
@@ -34,14 +39,13 @@ namespace SpaceInvaders
         private readonly float maxHorizontalCoordinate;
 
         private readonly Texture2D playerTexture;
-        private Vector2 position;
 
-        public Player(TextureAtlas textureAtlas)
+        public Player()
         {
-            playerTexture = textureAtlas["player"];
+            playerTexture = MainGame.Context.MainTextureAtlas["player"];
 
             float playerY = MainGame.HorizontalBoundaryY - playerTexture.Height * MainGame.SpriteScaleFactor - VerticalSpawnOffset;
-            position = new Vector2(MainGame.GameScreenWidth * 0.25f, playerY);
+            Position = new Vector2(MainGame.GameScreenWidth * 0.25f, playerY);
 
             maxHorizontalCoordinate = MainGame.HorizontalBoundaryEnd.X - playerTexture.Width * MainGame.SpriteScaleFactor;
         }
@@ -59,12 +63,13 @@ namespace SpaceInvaders
                 velocity = 1;
             }
 
-            position.X = MathHelper.Clamp(position.X + velocity * HorizontalSpeed, MainGame.HorizontalBoundaryStart.X, maxHorizontalCoordinate);
+            float newX = MathHelper.Clamp(Position.X + velocity * HorizontalSpeed, MainGame.HorizontalBoundaryStart.X, maxHorizontalCoordinate);
+            Position = new Vector2(newX, Position.Y);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(playerTexture, position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
+            spriteBatch.Draw(playerTexture, Position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
         }
     }
 }

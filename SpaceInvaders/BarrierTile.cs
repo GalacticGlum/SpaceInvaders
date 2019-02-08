@@ -11,13 +11,15 @@ using Microsoft.Xna.Framework;
 
 namespace SpaceInvaders
 {
-    public class BarrierTile
+    public struct BarrierTile
     {
-        private const int MaxHealth = 4;
+        public const int MaxHealth = 4;
 
         public Vector2 Position { get; }
         public string SpriteSuffix { get; }
         public int Health { get; }
+
+        public string TextureName => $"barrier_{SpriteSuffix}_{MaxHealth - Health + 1}";
 
         public BarrierTile(Vector2 position, string spriteSuffix)
         {

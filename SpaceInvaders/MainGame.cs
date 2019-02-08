@@ -48,20 +48,27 @@ namespace SpaceInvaders
         public static readonly Vector2 HorizontalBoundaryEnd = new Vector2(GameScreenWidth - HorizontalBoundarySize, HorizontalBoundaryY);
 
         /// <summary>
+        /// The current instance of this <see cref="MainGame"/>.
+        /// </summary>
+        public static MainGame Context { get; private set; }
+
+        /// <summary>
         /// The main texture atlas containing the player, enemy, and combat sprites.
         /// </summary>
         public TextureAtlas MainTextureAtlas { get; private set; }
 
+        public Player Player { get; private set; }
+        public EnemyGroup EnemyGroup { get; private set; }
+        public BarrierGroup BarrierGroup { get; private set; }
+
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
 
-        private Player player;
-        private EnemyGroup enemyGroup;
-        
         public MainGame()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            Context = this;
         }
 
         /// <summary>
@@ -94,10 +101,9 @@ namespace SpaceInvaders
             // Load all the enemy types
             EnemyType.Load(Content);
 
-            player = new Player(MainTextureAtlas);
-            enemyGroup = new EnemyGroup(MainTextureAtlas, Content);
-
-            new Barrier(Vector2.Zero, Content);
+            Player = new Player();
+            EnemyGroup = new EnemyGroup();
+            BarrierGroup = new BarrierGroup();
         }
 
         /// <summary>
@@ -113,8 +119,8 @@ namespace SpaceInvaders
             // so that the gameplay does not lag by a frame (due to not synchronized input).
             Input.Update();
 
-            player.Update(deltaTime);
-            enemyGroup.Update(deltaTime);
+            Player.Update(deltaTime);
+            EnemyGroup.Update(deltaTime);
         }
 
         /// <summary>
@@ -128,8 +134,9 @@ namespace SpaceInvaders
             spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             spriteBatch.DrawLine(HorizontalBoundaryStart, HorizontalBoundaryEnd, ColourHelpers.PureGreen, 2);
 
-            player.Draw(spriteBatch);
-            enemyGroup.Draw(spriteBatch);
+            Player.Draw(spriteBatch);
+            EnemyGroup.Draw(spriteBatch);
+            BarrierGroup.Draw(spriteBatch);
 
             spriteBatch.End();
         }
