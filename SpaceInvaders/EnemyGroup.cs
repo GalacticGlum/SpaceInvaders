@@ -135,7 +135,6 @@ namespace SpaceInvaders
         /// <summary>
         /// Loads the enemy type layers from a content file.
         /// </summary>
-        /// <param name="contentManager">The <see cref="ContentManager"/> context.</param>
         /// <returns>An array of enemy types containing the enemy type layers.</returns>
         private static EnemyType[] LoadEnemyTypeLayers()
         {
@@ -206,7 +205,7 @@ namespace SpaceInvaders
                     float offsetY = enemy.Position.Y * groupCellHeight + paddingY;
 
                     spriteBatch.Draw(texture, position + new Vector2(offsetX, offsetY), null, Color.White, 0, 
-                        Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
+                        Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0.7f);
                 }
             }
         }

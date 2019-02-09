@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
+using SpaceInvaders.Logging;
 
 namespace SpaceInvaders.Helpers
 {
@@ -26,7 +27,7 @@ namespace SpaceInvaders.Helpers
         public Rectangle Rectangle { get; set; }
 
         [JsonIgnore]
-        public Texture2D Texture { get; set; } = null;
+        public Texture2D Texture { get; set; }
     }
 
     public class TextureAtlas
@@ -69,7 +70,12 @@ namespace SpaceInvaders.Helpers
 
         public Texture2D Get(string name, bool forceReload = false)
         {
-            if (!textureAtlasEntries.ContainsKey(name)) return null;
+            if (!textureAtlasEntries.ContainsKey(name))
+            {
+                Logger.LogFunctionEntry(string.Empty, $"Could not find texture with name \"{name}\".", LoggerVerbosity.Warning);
+                return null;
+            }
+
             TextureAtlasEntry entry = textureAtlasEntries[name];
             if (!forceReload && entry.Texture != null)
             {

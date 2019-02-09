@@ -1,0 +1,28 @@
+[
+    {
+        "type": "Player",
+        "velocity": "0,-450",
+        "frames": [
+            "bullet_player"
+        ],
+        "animation_rate": 0.25
+    },
+    {
+        "type": "Enemy",
+        "velocity": "0,-1",
+        "frames": [
+            "bullet_cross_1",
+            "bullet_cross_2"
+        ],
+        "animation_rate": 0.25 
+    },
+    {
+        "type": "Enemy",
+        "velocity": "0,-1",
+        "frames": [
+            "bullet_snake_1",
+            "bullet_snake_2"
+        ],
+        "animation_rate": 0.25
+    }
+]

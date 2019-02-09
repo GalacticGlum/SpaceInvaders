@@ -17,7 +17,7 @@ namespace SpaceInvaders.ContentPipeline
         protected override JsonObject Read(ContentReader input, JsonObject existingInstance)
         {
             string json = input.ReadString();
-            return new JsonObject(json, JsonConvert.DeserializeObject<dynamic>(json));
+            return new JsonObject(json);
         }
     }
 }

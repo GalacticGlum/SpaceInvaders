@@ -17,12 +17,10 @@ namespace SpaceInvaders.ContentPipeline
     public class JsonObject
     {
         public string JsonSource { get; }
-        public dynamic Data { get; }
 
-        public JsonObject(string jsonSource, dynamic data)
+        public JsonObject(string jsonSource)
         {
             JsonSource = jsonSource;
-            Data = data;
         }
     }
 }

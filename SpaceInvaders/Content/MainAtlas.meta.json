@@ -241,5 +241,14 @@
             "Width": 5,
             "Height": 5
         }
+    },
+    {
+        "name": "bullet_player",
+        "rectangle": {
+            "X": 31,
+            "Y": 21,
+            "Width": 1,
+            "Height": 4
+        }
     }
 ]

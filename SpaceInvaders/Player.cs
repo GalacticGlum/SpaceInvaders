@@ -26,7 +26,7 @@ namespace SpaceInvaders
         /// <summary>
         /// The horizontal speed in pixels per second.
         /// </summary>
-        private const int HorizontalSpeed = 5;
+        private const int HorizontalSpeed = 200;
 
         /// <summary>
         /// The position of this <see cref="Player"/>.
@@ -34,23 +34,36 @@ namespace SpaceInvaders
         public Vector2 Position { get; private set; }
 
         /// <summary>
+        /// The texture of this <see cref="Player"/>.
+        /// </summary>
+        public Texture2D Texture { get; }
+
+        /// <summary>
         /// The maximum horizontal coordinate that the player cannot go beyond.
         /// </summary>
         private readonly float maxHorizontalCoordinate;
 
-        private readonly Texture2D playerTexture;
-
         public Player()
         {
-            playerTexture = MainGame.Context.MainTextureAtlas["player"];
+            Texture = MainGame.Context.MainTextureAtlas["player"];
 
-            float playerY = MainGame.HorizontalBoundaryY - playerTexture.Height * MainGame.SpriteScaleFactor - VerticalSpawnOffset;
+            float playerY = MainGame.HorizontalBoundaryY - Texture.Height * MainGame.SpriteScaleFactor - VerticalSpawnOffset;
             Position = new Vector2(MainGame.GameScreenWidth * 0.25f, playerY);
 
-            maxHorizontalCoordinate = MainGame.HorizontalBoundaryEnd.X - playerTexture.Width * MainGame.SpriteScaleFactor;
+            maxHorizontalCoordinate = MainGame.HorizontalBoundaryEnd.X - Texture.Width * MainGame.SpriteScaleFactor;
         }
 
         public void Update(float deltaTime)
+        {
+            HandleMovement(deltaTime);
+
+            if (Input.GetKeyDown(Keys.Space))
+            {
+                MainGame.Context.ProjectileController.CreatePlayerProjectile();
+            }
+        }
+
+        private void HandleMovement(float deltaTime)
         {
             float velocity = 0;
             if (Input.GetKey(Keys.A))
@@ -63,13 +76,13 @@ namespace SpaceInvaders
                 velocity = 1;
             }
 
-            float newX = MathHelper.Clamp(Position.X + velocity * HorizontalSpeed, MainGame.HorizontalBoundaryStart.X, maxHorizontalCoordinate);
+            float newX = MathHelper.Clamp(Position.X + velocity * HorizontalSpeed * deltaTime, MainGame.HorizontalBoundaryStart.X, maxHorizontalCoordinate);
             Position = new Vector2(newX, Position.Y);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(playerTexture, Position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
+            spriteBatch.Draw(Texture, Position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0.5f);
         }
     }
 }

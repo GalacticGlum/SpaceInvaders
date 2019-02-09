@@ -53,6 +53,7 @@
     <Compile Include="Helpers\ColourHelpers.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Helpers\PrimitiveDrawingHelper.cs" />
+    <Compile Include="Helpers\Random.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\TextureAtlas.cs" />
     <Compile Include="Helpers\TextureHelpers.cs" />
@@ -63,9 +64,13 @@
     <Compile Include="MainGame.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Projectile.cs" />
+    <Compile Include="ProjectileController.cs" />
+    <Compile Include="ProjectileType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="MonoGame.Framework">
       <HintPath>$(MonoGameInstallDirectory)\MonoGame\v3.0\Assemblies\DesktopGL\MonoGame.Framework.dll</HintPath>
     </Reference>

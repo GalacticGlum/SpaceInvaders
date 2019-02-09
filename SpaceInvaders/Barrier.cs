@@ -74,7 +74,7 @@ namespace SpaceInvaders
                     float offsetY = y * texture.Height * MainGame.SpriteScaleFactor;
 
                     spriteBatch.Draw(texture, position + new Vector2(offsetX, offsetY), null, ColourHelpers.PureGreen, 0,
-                        Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 1);
+                        Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0.6f);
                 }
             }
         }

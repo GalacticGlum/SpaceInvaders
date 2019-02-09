@@ -19,6 +19,11 @@
 /processor:JsonProcessor
 /build:BarrierLayout.json
 
+#begin BulletTypes.json
+/importer:JsonImporter
+/processor:JsonProcessor
+/build:BulletTypes.json
+
 #begin EnemyTypeLayers.json
 /importer:JsonImporter
 /processor:JsonProcessor

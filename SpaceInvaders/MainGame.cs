@@ -3,7 +3,7 @@
  * File Name: MainGame.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/07/2019
+ * Modified Date: 02/09/2019
  * Description: The core engine instance of the game that spawns all other entities
  *              and simulates logic and rendering.
  */
@@ -38,6 +38,13 @@ namespace SpaceInvaders
         public const float HorizontalBoundaryY = GameScreenHeight * 0.875f;
 
         /// <summary>
+        /// The vertical padding, in pixels, from the top of the screen
+        /// that is allocated for UI elements.
+        /// This value is 10% of the screen height.
+        /// </summary>
+        public const float TopVerticalBoundary = GameScreenHeight * 0.1f;
+
+        /// <summary>
         /// The starting point of the horizontal boundary line.
         /// </summary>
         public static readonly Vector2 HorizontalBoundaryStart = new Vector2(HorizontalBoundarySize, HorizontalBoundaryY);
@@ -46,6 +53,7 @@ namespace SpaceInvaders
         /// The ending point of the horizontal boundary line.
         /// </summary>
         public static readonly Vector2 HorizontalBoundaryEnd = new Vector2(GameScreenWidth - HorizontalBoundarySize, HorizontalBoundaryY);
+
 
         /// <summary>
         /// The current instance of this <see cref="MainGame"/>.
@@ -60,6 +68,7 @@ namespace SpaceInvaders
         public Player Player { get; private set; }
         public EnemyGroup EnemyGroup { get; private set; }
         public BarrierGroup BarrierGroup { get; private set; }
+        public ProjectileController ProjectileController { get; private set; }
 
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -104,6 +113,7 @@ namespace SpaceInvaders
             Player = new Player();
             EnemyGroup = new EnemyGroup();
             BarrierGroup = new BarrierGroup();
+            ProjectileController = new ProjectileController();
         }
 
         /// <summary>
@@ -121,6 +131,7 @@ namespace SpaceInvaders
 
             Player.Update(deltaTime);
             EnemyGroup.Update(deltaTime);
+            ProjectileController.Update(deltaTime);
         }
 
         /// <summary>
@@ -131,12 +142,13 @@ namespace SpaceInvaders
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp);
             spriteBatch.DrawLine(HorizontalBoundaryStart, HorizontalBoundaryEnd, ColourHelpers.PureGreen, 2);
 
             Player.Draw(spriteBatch);
             EnemyGroup.Draw(spriteBatch);
             BarrierGroup.Draw(spriteBatch);
+            ProjectileController.Draw(spriteBatch);
 
             spriteBatch.End();
         }
