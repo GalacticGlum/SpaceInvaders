@@ -10,7 +10,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using SpaceInvaders.Helpers;
+using SpaceInvaders.Engine;
 using SpaceInvaders.Logging;
 
 namespace SpaceInvaders
@@ -144,6 +144,9 @@ namespace SpaceInvaders
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp);
             spriteBatch.DrawLine(HorizontalBoundaryStart, HorizontalBoundaryEnd, ColourHelpers.PureGreen, 2);
+
+            spriteBatch.DrawLine(new Vector2(0, MainGame.TopVerticalBoundary),
+                new Vector2(MainGame.GameScreenWidth, MainGame.TopVerticalBoundary), Color.White, 1);
 
             Player.Draw(spriteBatch);
             EnemyGroup.Draw(spriteBatch);

@@ -10,8 +10,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using SpaceInvaders.Helpers;
-
+using SpaceInvaders.Engine;
 using MathHelper = Microsoft.Xna.Framework.MathHelper;
 
 namespace SpaceInvaders

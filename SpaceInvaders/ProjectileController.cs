@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
-using Random = SpaceInvaders.Helpers.Random;
+using Random = SpaceInvaders.Engine.Random;
 
 namespace SpaceInvaders
 {

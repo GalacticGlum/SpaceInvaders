@@ -7,7 +7,7 @@
  * Description: A collection of useful utilities that perform mathematical computations.
  */
 
-namespace SpaceInvaders.Helpers
+namespace SpaceInvaders.Engine
 {
     public static class MathHelper
     {

@@ -10,7 +10,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace SpaceInvaders
+namespace SpaceInvaders.Engine
 {
     public enum MouseButton
     {

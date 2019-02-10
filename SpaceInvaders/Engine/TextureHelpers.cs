@@ -10,7 +10,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace SpaceInvaders.Helpers
+namespace SpaceInvaders.Engine
 {
     public static class TextureHelpers
     {

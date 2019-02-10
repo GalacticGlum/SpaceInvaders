@@ -10,7 +10,7 @@
 using System;
 using RandomEngine = System.Random;
 
-namespace SpaceInvaders.Helpers
+namespace SpaceInvaders.Engine
 {
     public static class Random
     {

@@ -9,7 +9,7 @@
 
 using System.Linq;
 
-namespace SpaceInvaders.Helpers
+namespace SpaceInvaders.Engine
 {
     /// <summary>
     /// Collection of useful string related functionality.

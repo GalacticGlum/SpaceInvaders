@@ -14,9 +14,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
-using SpaceInvaders.Helpers;
+using SpaceInvaders.Engine;
 
-using MathHelper = SpaceInvaders.Helpers.MathHelper;
+using MathHelper = SpaceInvaders.Engine.MathHelper;
 using MonoGameMathHelper = Microsoft.Xna.Framework.MathHelper;
 
 namespace SpaceInvaders

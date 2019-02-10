@@ -17,7 +17,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Timers;
 
-using SpaceInvaders.Helpers;
+using SpaceInvaders.Engine;
 
 namespace SpaceInvaders.Logging
 {

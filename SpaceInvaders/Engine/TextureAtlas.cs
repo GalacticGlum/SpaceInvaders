@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
 using SpaceInvaders.Logging;
 
-namespace SpaceInvaders.Helpers
+namespace SpaceInvaders.Engine
 {
     public class TextureAtlasEntry
     {

@@ -9,7 +9,7 @@
 
 using Microsoft.Xna.Framework;
 
-namespace SpaceInvaders.Helpers
+namespace SpaceInvaders.Engine
 {
     public static class ColourHelpers
     {

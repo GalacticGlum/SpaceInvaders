@@ -3,15 +3,16 @@
  * File Name: Barrier.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/06/2019
- * Modified Date: 02/06/2019
+ * Modified Date: 02/10/2019
  * Description: DESCRIPTION
  */
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
-using SpaceInvaders.Helpers;
+using SpaceInvaders.Engine;
 
 namespace SpaceInvaders
 {
@@ -27,6 +28,7 @@ namespace SpaceInvaders
         private readonly int tileWidth;
         private readonly int tileHeight;
 
+        private readonly RectangleF boundingRectangle;
         private readonly BarrierTile[,] tiles;
         
         public Barrier(int spawnIndex)
@@ -51,14 +53,17 @@ namespace SpaceInvaders
             // have the same height, we can load in an arbitrary barrier tile texture.
             // For simplicity sake, we use the first element of the tiles grid. 
             Texture2D barrierTileTexture = MainGame.Context.MainTextureAtlas[tiles[0, 0].TextureName];
+            float totalWidth = tileWidth * barrierTileTexture.Width * MainGame.SpriteScaleFactor;
+            float totalHeight = tileHeight * barrierTileTexture.Height * MainGame.SpriteScaleFactor;
 
             float deltaX = (MainGame.HorizontalBoundaryStart.X + MainGame.HorizontalBoundaryEnd.X) / (BarrierGroup.SpawnBarrierCount + 1);
-            float xCorrection = tileWidth * barrierTileTexture.Width * MainGame.SpriteScaleFactor * 0.5f;
+            float xCorrection = totalWidth * 0.5f;
             float spawnX = MainGame.HorizontalBoundaryStart.X + deltaX * (spawnIndex + 1) - xCorrection;
 
-            float yCorrection = tileHeight * barrierTileTexture.Height * MainGame.SpriteScaleFactor;
-            float spawnY =  MainGame.Context.Player.Position.Y - VerticalSpawnOffset * MainGame.SpriteScaleFactor - yCorrection;
+            float spawnY =  MainGame.Context.Player.Position.Y - VerticalSpawnOffset * MainGame.SpriteScaleFactor - totalHeight;
             position = new Vector2(spawnX, spawnY);
+
+            boundingRectangle = new RectangleF(position.X, position.Y, totalWidth, totalHeight);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -67,16 +72,32 @@ namespace SpaceInvaders
             {
                 for (int x = 0; x < tileWidth; x++)
                 {
-                    BarrierTile tile = tiles[x, y];
-
-                    Texture2D texture = MainGame.Context.MainTextureAtlas[tile.TextureName];
-                    float offsetX = x * texture.Width * MainGame.SpriteScaleFactor;
-                    float offsetY = y * texture.Height * MainGame.SpriteScaleFactor;
-
-                    spriteBatch.Draw(texture, position + new Vector2(offsetX, offsetY), null, ColourHelpers.PureGreen, 0,
-                        Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0.6f);
+                    tiles[x, y].Draw(position, spriteBatch);
                 }
             }
+        }
+
+        public bool Intersects(RectangleF rectangle, out BarrierTile intersectionTile)
+        {
+            intersectionTile = null;
+            // As a preliminary check, let's see if this rectangle
+            // intersects the bounding box at all. Then, we can check
+            // the individual tiles.
+            if (!rectangle.Intersects(boundingRectangle)) return false;
+
+            for (int y = 0; y < tileHeight; y++)
+            {
+                for (int x = 0; x < tileWidth; x++)
+                {
+                    BarrierTile tile = tiles[x, y];
+                    if (!tile.Active) continue;
+                    if (!rectangle.Intersects(tile.GetWorldRectangle(position))) continue;
+                    intersectionTile = tile;
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

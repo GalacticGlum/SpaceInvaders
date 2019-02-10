@@ -50,14 +50,15 @@
     <Compile Include="Enemy.cs" />
     <Compile Include="EnemyGroup.cs" />
     <Compile Include="EnemyType.cs" />
-    <Compile Include="Helpers\ColourHelpers.cs" />
-    <Compile Include="Helpers\MathHelper.cs" />
-    <Compile Include="Helpers\PrimitiveDrawingHelper.cs" />
-    <Compile Include="Helpers\Random.cs" />
-    <Compile Include="Helpers\StringHelper.cs" />
-    <Compile Include="Helpers\TextureAtlas.cs" />
-    <Compile Include="Helpers\TextureHelpers.cs" />
-    <Compile Include="Input.cs" />
+    <Compile Include="Engine\ColourHelpers.cs" />
+    <Compile Include="Engine\MathHelper.cs" />
+    <Compile Include="Engine\PrimitiveDrawingHelper.cs" />
+    <Compile Include="Engine\Random.cs" />
+    <Compile Include="Engine\RectangleF.cs" />
+    <Compile Include="Engine\StringHelper.cs" />
+    <Compile Include="Engine\TextureAtlas.cs" />
+    <Compile Include="Engine\TextureHelpers.cs" />
+    <Compile Include="Engine\Input.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LoggerDestination.cs" />
     <Compile Include="Logging\LoggerVerbosity.cs" />
@@ -78,6 +79,7 @@
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
