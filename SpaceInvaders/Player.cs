@@ -46,10 +46,10 @@ namespace SpaceInvaders
         {
             Texture = MainGame.Context.MainTextureAtlas["player"];
 
-            float playerY = MainGame.HorizontalBoundaryY - Texture.Height * MainGame.SpriteScaleFactor - VerticalSpawnOffset;
+            float playerY = MainGame.HorizontalBoundaryY - Texture.Height * MainGame.ResolutionScale - VerticalSpawnOffset;
             Position = new Vector2(MainGame.GameScreenWidth * 0.25f, playerY);
 
-            maxHorizontalCoordinate = MainGame.HorizontalBoundaryEnd.X - Texture.Width * MainGame.SpriteScaleFactor;
+            maxHorizontalCoordinate = MainGame.HorizontalBoundaryEnd.X - Texture.Width * MainGame.ResolutionScale;
         }
 
         public void Update(float deltaTime)
@@ -81,7 +81,7 @@ namespace SpaceInvaders
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0.5f);
+            spriteBatch.Draw(Texture, Position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.5f);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace SpaceInvaders
         /// <summary>
         /// The scale factor of all game sprites.
         /// </summary>
-        public const float SpriteScaleFactor = 2.5f;
+        public const float ResolutionScale = 2.5f;
 
         /// <summary>
         /// The y-coordinate of the horizontal boundary line.
@@ -144,9 +144,6 @@ namespace SpaceInvaders
 
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp);
             spriteBatch.DrawLine(HorizontalBoundaryStart, HorizontalBoundaryEnd, ColourHelpers.PureGreen, 2);
-
-            spriteBatch.DrawLine(new Vector2(0, MainGame.TopVerticalBoundary),
-                new Vector2(MainGame.GameScreenWidth, MainGame.TopVerticalBoundary), Color.White, 1);
 
             Player.Draw(spriteBatch);
             EnemyGroup.Draw(spriteBatch);

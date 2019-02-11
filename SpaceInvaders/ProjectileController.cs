@@ -72,7 +72,7 @@ namespace SpaceInvaders
             // The projectile should spawn at the top-centre of the player.
             // The position of the player is the top-left so we just need to
             // horizontally offset it by half of the player width.
-            Vector2 offset = new Vector2(MainGame.Context.Player.Texture.Width * MainGame.SpriteScaleFactor * 0.5f, 0);
+            Vector2 offset = new Vector2(MainGame.Context.Player.Texture.Width * MainGame.ResolutionScale * 0.5f, 0);
             Vector2 position = MainGame.Context.Player.Position + offset;
 
             // Get a random player projectile
