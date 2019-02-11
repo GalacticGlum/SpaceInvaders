@@ -46,7 +46,7 @@ namespace SpaceInvaders
         }
 
         /// <summary>
-        /// Determine whether the specified <paramref name="rectangle"/>
+        /// Determine whether the specified <see cref="RectangleF"/>
         /// is intersecting with one of the barriers in this <see cref="BarrierGroup"/>.
         /// </summary>
         /// <param name="rectangle"></param>
