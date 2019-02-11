@@ -7,7 +7,6 @@
  * Description: DESCRIPTION
  */
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
@@ -81,9 +80,15 @@ namespace SpaceInvaders
             // Check whether the projectile hit any of the boundaries
             // If so, we need to decrement the health of the boundary and
             // destroy this projectile.
-            if (MainGame.Context.BarrierGroup.Intersects(rectangle, out BarrierHitResult hitResult))
+            if (MainGame.Context.BarrierGroup.Intersects(rectangle, out BarrierHitResult barrierHitResult))
             {
-                hitResult.Tile.Health -= 1;
+                barrierHitResult.Tile.Health -= 1;
+                MainGame.Context.ProjectileController.Remove(this);
+            }
+
+            if (MainGame.Context.EnemyGroup.Intersects(rectangle, out Point enemyHitResult))
+            {
+                MainGame.Context.EnemyGroup.RemoveEnemy(enemyHitResult.X, enemyHitResult.Y);
                 MainGame.Context.ProjectileController.Remove(this);
             }
         }
@@ -98,14 +103,14 @@ namespace SpaceInvaders
             if (!(animationTimer <= 0)) return;
 
             frameCount = (frameCount + 1) % FrameNames.Length;
-            rectangle.Width = frameTextures[frameCount].Width * MainGame.SpriteScaleFactor;
-            rectangle.Height = frameTextures[frameCount].Height * MainGame.SpriteScaleFactor;
+            rectangle.Width = frameTextures[frameCount].Width * MainGame.ResolutionScale;
+            rectangle.Height = frameTextures[frameCount].Height * MainGame.ResolutionScale;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(frameTextures[frameCount], rectangle.Position, null, Color.White, 0, Vector2.Zero, 
-                MainGame.SpriteScaleFactor, SpriteEffects.None, 0);
+                MainGame.ResolutionScale, SpriteEffects.None, 0);
         }
     }
 }

@@ -26,6 +26,8 @@ namespace SpaceInvaders
         /// </summary>
         public EnemyType Type { get; }
 
+        public bool Active { get; set; }
+
         /// <summary>
         /// Initializes a new <see cref="Enemy"/>.
         /// </summary>
@@ -35,6 +37,7 @@ namespace SpaceInvaders
         {
             Position = position;
             Type = type;
+            Active = true;
         }
     }
 }

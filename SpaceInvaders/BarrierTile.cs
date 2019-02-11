@@ -62,7 +62,7 @@ namespace SpaceInvaders
             if (!Active) return;
 
             spriteBatch.Draw(Texture, barrierPosition + LocalRectangle.Position, null, ColourHelpers.PureGreen, 0,
-                Vector2.Zero, MainGame.SpriteScaleFactor, SpriteEffects.None, 0.6f);
+                Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.6f);
 
             // Debug drawing
             spriteBatch.DrawBorder(GetWorldRectangle(barrierPosition), Color.Blue, 2, 0.8f);
@@ -70,8 +70,8 @@ namespace SpaceInvaders
 
         private void RecalculateRectangle()
         {
-            float textureWidth = Texture.Width * MainGame.SpriteScaleFactor;
-            float textureHeight = Texture.Height * MainGame.SpriteScaleFactor;
+            float textureWidth = Texture.Width * MainGame.ResolutionScale;
+            float textureHeight = Texture.Height * MainGame.ResolutionScale;
             float x = gridPosition.X * textureWidth;
             float y = gridPosition.Y * textureHeight;
             LocalRectangle = new RectangleF(x, y, textureWidth, textureHeight);
