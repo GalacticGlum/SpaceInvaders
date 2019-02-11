@@ -264,12 +264,14 @@ namespace SpaceInvaders
         /// <returns>The time, in seconds, until the next movement.</returns>
         private float GetMovementTimeCurve()
         {
+            const float intensityCoefficient = 2.5f;
+
             // The value of h(x) = 1000 / ((T + 1 - x)^3)
             // where T is the total enemy count and x is the remaining enemy count.
             float hx = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGroupEnemies + remainingEnemyCount + 1, 3));
             
             // m(x) = 1 / 2.5(h(x) - 0.25)
-            return 1 / (2.5f * hx - 0.625f);
+            return 1 / (intensityCoefficient * (hx - 0.25f));
         }
     }
 }

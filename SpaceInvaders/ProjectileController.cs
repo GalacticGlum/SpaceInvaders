@@ -22,14 +22,28 @@ namespace SpaceInvaders
         private readonly Dictionary<ProjectileType, List<Projectile>> projectilePrototypes;
 
         /// <summary>
+        /// A list containing all the <see cref="Projectile"/> objects to destroy
+        /// at the end of the frame.
+        /// <remarks>
+        /// This is because if the player fires a projectile while we are traversing the
+        /// projectile collection (i.e. during draw or update), a CollectionWasModified
+        /// exception would be thrown since the collection was modified during traversal.
+        /// In order to get around this, we can modify the list AFTER the traversal.
+        /// </remarks>
+        /// </summary>
+        private readonly List<Projectile> destroyList;
+
+        /// <summary>
         /// The current active projectiles shot by enemies.
         /// </summary>
-        private readonly Dictionary<ProjectileType, HashSet<Projectile>> activateProjectiles;
+        private readonly Dictionary<ProjectileType, List<Projectile>> activateProjectiles;
 
         public ProjectileController()
         {
-            activateProjectiles = new Dictionary<ProjectileType, HashSet<Projectile>>();
+            activateProjectiles = new Dictionary<ProjectileType, List<Projectile>>();
             projectilePrototypes = new Dictionary<ProjectileType, List<Projectile>>();
+            destroyList = new List<Projectile>();
+
             LoadProjectilePrototypes();
         }
 
@@ -44,14 +58,9 @@ namespace SpaceInvaders
                     projectilePrototypes[projectile.Type] = new List<Projectile>();
 
                     // "Warm-up" our active projectiles dictionary so that we don't have to
-                    // create the hashset later. The benefits are twofold:
-                    //      a) we don't need to check whether the collection contains the type
-                    //         when we want to modify it.
-                    //      b) We don't need to worry about copying the collection when we apply
-                    //         an operation to it (to avoid a CollectionWasModified exception) since
-                    //         the dictionary will remain unchanged. Hence, we only need to copy the
-                    //         underlying hash set containing the projectiles.
-                    activateProjectiles[projectile.Type] = new HashSet<Projectile>();
+                    // create the list later. This means that we don't need to check whether
+                    // the collection contains the type when we want to modify it.
+                    activateProjectiles[projectile.Type] = new List<Projectile>();
                 }
 
                 projectilePrototypes[projectile.Type].Add(projectile);
@@ -87,12 +96,21 @@ namespace SpaceInvaders
         public void Remove(Projectile projectile)
         {
             if (!activateProjectiles.ContainsKey(projectile.Type)) return;
-            activateProjectiles[projectile.Type].Remove(projectile);
+            destroyList.Add(projectile);
         }
 
         public void Update(float deltaTime)
         {
             ApplyOperationOnProjectiles(projectile => projectile.Update(deltaTime));
+            CollectProjectiles();
+        }
+
+        private void CollectProjectiles()
+        {
+            foreach (Projectile projectile in destroyList)
+            {
+                activateProjectiles[projectile.Type].Remove(projectile);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -102,17 +120,8 @@ namespace SpaceInvaders
 
         private void ApplyOperationOnProjectiles(Action<Projectile> operation)
         {
-            foreach (HashSet<Projectile> projectileSet in activateProjectiles.Values)
+            foreach (List<Projectile> projectiles in activateProjectiles.Values)
             {
-                if (projectileSet.Count == 0) continue;
-
-                // We need to copy the value collection into memory to avoid modification errors.
-                // In particular, if the player fires a projectile while we are traversing this
-                // collection, a CollectionWasModified exception will be thrown since the collection
-                // was modified during traversal.
-                Projectile[] projectiles = new Projectile[projectileSet.Count];
-                projectileSet.CopyTo(projectiles, 0);
-
                 foreach (Projectile projectile in projectiles)
                 {
                     operation(projectile);

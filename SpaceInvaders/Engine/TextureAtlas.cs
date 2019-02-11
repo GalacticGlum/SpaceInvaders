@@ -18,74 +18,42 @@ using SpaceInvaders.Logging;
 
 namespace SpaceInvaders.Engine
 {
-    public class TextureAtlasEntry
+    public struct TextureAtlasEntry
     {
         [JsonProperty("name", Required = Required.Always)]
         public string Name { get; set; }
 
         [JsonProperty("rectangle", Required = Required.Always)]
         public Rectangle Rectangle { get; set; }
-
-        [JsonIgnore]
-        public Texture2D Texture { get; set; }
     }
 
     public class TextureAtlas
     {
         public Texture2D this[string name] => Get(name);
 
-        private readonly Texture2D textureAtlas;
-        private readonly Dictionary<string, TextureAtlasEntry> textureAtlasEntries;
-
-        private readonly GraphicsDevice graphicsDevice;
+        private readonly Dictionary<string, Texture2D> textureAtlasEntries;
 
         public TextureAtlas(string atlasContentFilePath, GraphicsDevice graphicsDevice, ContentManager contentManager)
         {
-            this.graphicsDevice = graphicsDevice;
+            textureAtlasEntries = new Dictionary<string, Texture2D>();
+            Texture2D textureAtlas = contentManager.Load<Texture2D>(atlasContentFilePath);
 
-            textureAtlas = contentManager.Load<Texture2D>(atlasContentFilePath);
-            textureAtlasEntries = new Dictionary<string, TextureAtlasEntry>();
-
-            LoadMetaData(atlasContentFilePath, contentManager);
-        }
-
-        public TextureAtlas(Texture2D textureAtlas, string atlasMetaDataFilePath, GraphicsDevice graphicsDevice, ContentManager contentManager)
-        {
-            this.graphicsDevice = graphicsDevice;
-            this.textureAtlas = textureAtlas;
-
-            textureAtlasEntries = new Dictionary<string, TextureAtlasEntry>();
-            LoadMetaData(atlasMetaDataFilePath, contentManager);
-        }
-
-        private void LoadMetaData(string atlasMetaDataFilePath, ContentManager contentManager)
-        {
-            string json = contentManager.Load<JsonObject>(Path.ChangeExtension(atlasMetaDataFilePath, "meta")).JsonSource;
+            string json = contentManager.Load<JsonObject>(Path.ChangeExtension(atlasContentFilePath, "meta")).JsonSource;
             TextureAtlasEntry[] metaDataEntries = JsonConvert.DeserializeObject<TextureAtlasEntry[]>(json);
             foreach (TextureAtlasEntry entry in metaDataEntries)
             {
-                textureAtlasEntries[entry.Name] = entry;
+                textureAtlasEntries[entry.Name] = TextureHelpers.GetCroppedTexture(textureAtlas, entry.Rectangle, graphicsDevice);
             }
+
+            contentManager.Unload();
         }
 
-        public Texture2D Get(string name, bool forceReload = false)
+        public Texture2D Get(string name)
         {
-            if (!textureAtlasEntries.ContainsKey(name))
-            {
-                Logger.LogFunctionEntry(string.Empty, $"Could not find texture with name \"{name}\".", LoggerVerbosity.Warning);
-                return null;
-            }
+            if (textureAtlasEntries.ContainsKey(name)) return textureAtlasEntries[name];
 
-            TextureAtlasEntry entry = textureAtlasEntries[name];
-            if (!forceReload && entry.Texture != null)
-            {
-                return entry.Texture;
-            }
-
-            Texture2D texture = TextureHelpers.GetCroppedTexture(textureAtlas, entry.Rectangle, graphicsDevice);
-            entry.Texture = texture;
-
-            return texture;
+            Logger.LogFunctionEntry(string.Empty, $"Could not find texture with name \"{name}\".", LoggerVerbosity.Warning);
+            return null;
         }
     }
 }

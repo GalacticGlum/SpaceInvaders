@@ -122,10 +122,8 @@ namespace SpaceInvaders.Logging
         private static void OnMessageLogged(MessagedLoggerEventArgs args) => MessageLogged?.Invoke(args);
 
         private static readonly StringBuilder messageBuffer = new StringBuilder();
-        private static readonly Timer messageBufferFlushTimer;
 
         private static string logFilePath;
-        private static bool isFirstLog = true;
         private static int messageCountSinceLastFlush;
 
         /// <summary>
@@ -143,15 +141,6 @@ namespace SpaceInvaders.Logging
             };
 
             logFilePath = GetLogFileName();
-
-            // Initialize message buffer flush timer
-            messageBufferFlushTimer = new Timer(FlushFrequency * 1000)
-            {
-                AutoReset = true
-            };
-
-            messageBufferFlushTimer.Elapsed += (sender, args) => FlushMessageBuffer();
-            messageBufferFlushTimer.Start();
 
             // Clear message buffer if exists.
             if (File.Exists(logFilePath))
@@ -260,13 +249,6 @@ namespace SpaceInvaders.Logging
                     FlushMessageBuffer();
                 }
             }
-
-            if (!isFirstLog) return;
-
-            // It is our first log so we need to startup the flush timer.
-            // The flush timer flushes the message buffer every X seconds.
-            messageBufferFlushTimer.Start();
-            isFirstLog = false;
         }
 
         /// <summary>

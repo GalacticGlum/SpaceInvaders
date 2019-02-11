@@ -8,6 +8,7 @@
  *              and simulates logic and rendering.
  */
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceInvaders.Engine;
@@ -151,6 +152,11 @@ namespace SpaceInvaders
             ProjectileController.Draw(spriteBatch);
 
             spriteBatch.End();
+        }
+
+        protected override void OnExiting(object sender, EventArgs args)
+        {
+            Logger.FlushMessageBuffer();
         }
     }
 }
