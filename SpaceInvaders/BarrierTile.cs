@@ -3,7 +3,7 @@
  * File Name: BarrierTile.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/06/2019
- * Modified Date: 02/10/2019
+ * Modified Date: 02/11/2019
  * Description: DESCRIPTION
  */
 
@@ -63,9 +63,6 @@ namespace SpaceInvaders
 
             spriteBatch.Draw(Texture, barrierPosition + LocalRectangle.Position, null, ColourHelpers.PureGreen, 0,
                 Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.6f);
-
-            // Debug drawing
-            spriteBatch.DrawBorder(GetWorldRectangle(barrierPosition), Color.Blue, 2, 0.8f);
         }
 
         private void RecalculateRectangle()

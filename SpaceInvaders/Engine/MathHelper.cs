@@ -3,7 +3,7 @@
  * File Name: MathHelper.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/06/2019
- * Modified Date: 02/06/2019
+ * Modified Date: 02/11/2019
  * Description: A collection of useful utilities that perform mathematical computations.
  */
 

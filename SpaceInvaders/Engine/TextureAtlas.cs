@@ -3,7 +3,7 @@
  * File Name: TextureAtlas.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/05/2019
+ * Modified Date: 02/12/2019
  * Description: DESCRIPTION
  */
 
@@ -45,6 +45,8 @@ namespace SpaceInvaders.Engine
                 textureAtlasEntries[entry.Name] = TextureHelpers.GetCroppedTexture(textureAtlas, entry.Rectangle, graphicsDevice);
             }
 
+            // Since we have load all the textures from our atlas, there is no
+            // reason to keep the texture atlas data allocated; hence, we can unload it.
             contentManager.Unload();
         }
 

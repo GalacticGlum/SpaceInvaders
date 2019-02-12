@@ -3,7 +3,7 @@
  * File Name: Logger.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/07/2019
- * Modified Date: 02/07/2019
+ * Modified Date: 02/12/2019
  * Description: Console logger with extra functionality. 
  */
 
@@ -15,7 +15,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Timers;
 
 using SpaceInvaders.Engine;
 

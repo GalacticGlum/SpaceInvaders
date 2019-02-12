@@ -3,7 +3,7 @@
  * File Name: MainGame.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/09/2019
+ * Modified Date: 02/11/2019
  * Description: The core engine instance of the game that spawns all other entities
  *              and simulates logic and rendering.
  */

@@ -3,7 +3,7 @@
  * File Name: EnemyGroup.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/11/2019
+ * Modified Date: 02/12/2019
  * Description: The top-level logic manager for all enemies.
  */
 
@@ -100,7 +100,7 @@ namespace SpaceInvaders
         private float timeToMovement;
         private bool canVerticallyMove;
 
-        private int animationFrameCounter;
+        private bool animationFrameToggle;
 
         public EnemyGroup()
         {
@@ -161,10 +161,7 @@ namespace SpaceInvaders
             timeToMovement -= deltaTime;
             if (timeToMovement <= 0)
             {
-                bool isTouchingHorizontalBounds = boundingRectangle.X == MainGame.HorizontalBoundaryStart.X || 
-                                                  boundingRectangle.X == MainGame.HorizontalBoundaryEnd.X - totalWidth;
-
-                if (canVerticallyMove && isTouchingHorizontalBounds)
+                if (canVerticallyMove && IsTouchingHorizontalBounds())
                 {
                     movementDirection *= -1;
                     boundingRectangle.Y += VerticalMovementShift * MainGame.ResolutionScale;
@@ -177,12 +174,22 @@ namespace SpaceInvaders
                 }
 
                 timeToMovement = GetMovementTimeCurve();
-                animationFrameCounter = (animationFrameCounter + 1) % 2;
+                animationFrameToggle = !animationFrameToggle;
+            }
+        }
+
+        private bool IsTouchingHorizontalBounds()
+        {
+            Enemy? leftMost = GetLeftMostEnemy();
+            Enemy? rightMost = GetRightMostEnemy();
+
+            if (leftMost.HasValue && rightMost.HasValue)
+            {
+                return GetEnemyWorldRectangle(leftMost.Value).Left <= MainGame.HorizontalBoundaryStart.X ||
+                       GetEnemyWorldRectangle(rightMost.Value).Right >= MainGame.HorizontalBoundaryEnd.X;
             }
 
-            // Make sure our horizontal position does not exceed the horizontal boundary
-            boundingRectangle.X = MonoGameMathHelper.Clamp(boundingRectangle.X, MainGame.HorizontalBoundaryStart.X, 
-                MainGame.HorizontalBoundaryEnd.X - totalWidth);
+            return false;
         }
 
         /// <summary>
@@ -199,11 +206,70 @@ namespace SpaceInvaders
                     if (!enemy.Active) continue;
 
                     RectangleF worldRectangle = GetEnemyWorldRectangle(enemy);
-
                     spriteBatch.Draw(GetEnemyTexture(enemy), worldRectangle.Position, 
                         null, Color.White, 0, Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.7f);
                 }
             }
+
+            Enemy? leftMost = GetLeftMostEnemy();
+            if (leftMost.HasValue)
+            {
+                spriteBatch.DrawBorder(GetEnemyWorldRectangle(leftMost.Value), Color.Red, 3, 0.8f);
+            }
+
+            Enemy? rightMost = GetRightMostEnemy();
+            if (rightMost.HasValue)
+            {
+                spriteBatch.DrawBorder(GetEnemyWorldRectangle(rightMost.Value), Color.Blue, 3, 0.8f);
+            }
+        }
+
+        private Enemy? GetLeftMostEnemy()
+        {
+            if (remainingEnemyCount == 0) return null;
+
+            Enemy? leftMostEnemy = null;
+            float boundaryX = float.MaxValue;
+            for (int x = 0; x < GroupWidth; x++)
+            {
+                for (int y = 0; y < GroupHeight; y++)
+                {
+                    Enemy enemy = enemyGrid[x, y];
+                    if (!enemy.Active) continue;
+
+                    RectangleF rectangle = GetEnemyWorldRectangle(enemy);
+                    if (rectangle.Left >= boundaryX) continue;
+
+                    boundaryX = rectangle.Left;
+                    leftMostEnemy = enemy;
+                }
+            }
+
+            return leftMostEnemy;
+        }
+
+        private Enemy? GetRightMostEnemy()
+        {
+            if (remainingEnemyCount == 0) return null;
+
+            Enemy? rightMostEnemy = null;
+            float boundaryX = float.MinValue;
+            for (int x = GroupWidth - 1; x >= 0; x--)
+            {
+                for (int y = 0; y < GroupHeight; y++)
+                {
+                    Enemy enemy = enemyGrid[x, y];
+                    if (!enemy.Active) continue;
+
+                    RectangleF rectangle = GetEnemyWorldRectangle(enemy);
+                    if (rectangle.Right <= boundaryX) continue;
+
+                    boundaryX = rectangle.Right;
+                    rightMostEnemy = enemy;
+                }
+            }
+
+            return rightMostEnemy;
         }
 
         private RectangleF GetEnemyWorldRectangle(Enemy enemy)
@@ -225,7 +291,7 @@ namespace SpaceInvaders
         }
 
         private Texture2D GetEnemyTexture(Enemy enemy) =>
-            MainGame.Context.MainTextureAtlas[$"enemy_{enemy.Type}_{animationFrameCounter + 1}"];
+            MainGame.Context.MainTextureAtlas[$"enemy_{enemy.Type}_{(animationFrameToggle ? 2 : 1)}"];
 
         public void RemoveEnemy(int x, int y)
         {
@@ -264,6 +330,8 @@ namespace SpaceInvaders
         /// <returns>The time, in seconds, until the next movement.</returns>
         private float GetMovementTimeCurve()
         {
+            // The intensity (horizontal compression) of the function;
+            // the smaller this value is, the longer the movement rate.
             const float intensityCoefficient = 2.5f;
 
             // The value of h(x) = 1000 / ((T + 1 - x)^3)
