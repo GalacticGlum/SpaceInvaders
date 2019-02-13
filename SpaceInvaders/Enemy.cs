@@ -3,7 +3,7 @@
  * File Name: Enemy.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/06/2019
+ * Modified Date: 02/12/2019
  * Description: DESCRIPTION
  */
 
@@ -26,18 +26,28 @@ namespace SpaceInvaders
         /// </summary>
         public EnemyType Type { get; }
 
+        /// <summary>
+        /// Indicates whether this <see cref="Enemy"/> is still in the game.
+        /// </summary>
         public bool Active { get; set; }
+
+        /// <summary>
+        /// The time, in seconds, until this <see cref="Enemy"/> should attack.
+        /// </summary>
+        public float AttackTime { get; set; }
 
         /// <summary>
         /// Initializes a new <see cref="Enemy"/>.
         /// </summary>
         /// <param name="position">The position of this <see cref="Enemy"/> in the <see cref="EnemyGroup"/> grid.</param>
         /// <param name="type">The type of this <see cref="Enemy"/>.</param>
-        public Enemy(Vector2 position, EnemyType type)
+        /// <param name="attackTime">The time, in seconds, until this <see cref="Enemy"/> should attack.</param>
+        public Enemy(Vector2 position, EnemyType type, float attackTime)
         {
             Position = position;
             Type = type;
             Active = true;
+            AttackTime = attackTime;
         }
     }
 }

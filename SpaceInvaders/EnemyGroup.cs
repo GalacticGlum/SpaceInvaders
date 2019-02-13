@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
 using SpaceInvaders.Engine;
 using MathHelper = SpaceInvaders.Engine.MathHelper;
-using MonoGameMathHelper = Microsoft.Xna.Framework.MathHelper;
+using Random = SpaceInvaders.Engine.Random;
 
 namespace SpaceInvaders
 {
@@ -87,6 +87,11 @@ namespace SpaceInvaders
         private readonly Enemy[,] enemyGrid;
 
         /// <summary>
+        /// The starting coordinates of this <see cref="EnemyGroup"/>.
+        /// </summary>
+        private readonly Vector2 startingPosition;
+
+        /// <summary>
         /// The number of enemies in this <see cref="EnemyGroup"/> that are not dead.
         /// </summary>
         private int remainingEnemyCount;
@@ -110,7 +115,7 @@ namespace SpaceInvaders
             {
                 for (int x = 0; x < GroupWidth; x++)
                 {
-                    enemyGrid[x, y] = new Enemy(new Vector2(x, y), enemyTypeLayers[y]);
+                    enemyGrid[x, y] = new Enemy(new Vector2(x, y), enemyTypeLayers[y], GetEnemyAttackTime());
                 }
             }
 
@@ -131,7 +136,8 @@ namespace SpaceInvaders
             const float positionY = MainGame.GameScreenHeight * 0.25f;
             boundingRectangle = new RectangleF(positionX, positionY, totalWidth, totalHeight);
 
-            timeToMovement = GetMovementTimeCurve();
+            timeToMovement = GetMovementTime();
+            startingPosition = boundingRectangle.Position;
         }
 
         /// <summary>
@@ -173,8 +179,22 @@ namespace SpaceInvaders
                     canVerticallyMove = true;
                 }
 
-                timeToMovement = GetMovementTimeCurve();
+                timeToMovement = GetMovementTime();
                 animationFrameToggle = !animationFrameToggle;
+            }
+
+            for (int y = 0; y < GroupHeight; y++)
+            {
+                for (int x = 0; x < GroupWidth; x++)
+                {
+                    Enemy enemy = enemyGrid[x, y];
+                    enemy.AttackTime -= deltaTime;
+                    if (enemy.AttackTime <= 0)
+                    {
+                        enemy.AttackTime = GetEnemyAttackTime();
+                        // TODO: Attack!
+                    }
+                }
             }
         }
 
@@ -309,8 +329,8 @@ namespace SpaceInvaders
                 for (int x = 0; x < GroupWidth; x++)
                 {
                     Enemy enemy = enemyGrid[x, y];
-                    if (!enemy.Active) continue;
-                    if (!rectangle.Intersects(GetEnemyWorldRectangle(enemy))) continue;
+                    if (!enemy.Active || !rectangle.Intersects(GetEnemyWorldRectangle(enemy))) continue;
+
                     result = new Point(x, y);
                     return true;
                 }
@@ -328,7 +348,7 @@ namespace SpaceInvaders
         /// square root operation.
         /// </summary>
         /// <returns>The time, in seconds, until the next movement.</returns>
-        private float GetMovementTimeCurve()
+        private float GetMovementTime()
         {
             // The intensity (horizontal compression) of the function;
             // the smaller this value is, the longer the movement rate.
@@ -340,6 +360,25 @@ namespace SpaceInvaders
             
             // m(x) = 1 / 2.5(h(x) - 0.25)
             return 1 / (intensityCoefficient * (hx - 0.25f));
+        }
+
+        private float GetEnemyAttackTime()
+        {
+            const float initialMaximumTime = 10;
+            const float initialMinimumTime = 4;
+            const float finalMaximumTime = 6;
+            const float finalMinimumTime = 0.5f;
+
+            float power = 1 / startingPosition.Y;
+
+            float b1 = (float)Math.Pow(initialMinimumTime / initialMaximumTime, power);
+            float b2 = (float) Math.Pow(finalMinimumTime / finalMaximumTime, power);
+
+            float distance = boundingRectangle.Y - startingPosition.Y;
+            float maximumTime = initialMaximumTime * (float) Math.Pow(b1, distance);
+            float minimumTime = finalMaximumTime * (float) Math.Pow(b2, distance);
+
+            return Random.Range(minimumTime, maximumTime);
         }
     }
 }

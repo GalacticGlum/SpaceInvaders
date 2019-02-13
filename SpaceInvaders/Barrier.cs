@@ -90,8 +90,8 @@ namespace SpaceInvaders
                 for (int x = 0; x < tileWidth; x++)
                 {
                     BarrierTile tile = tiles[x, y];
-                    if (!tile.Active) continue;
-                    if (!rectangle.Intersects(tile.GetWorldRectangle(position))) continue;
+                    if (!tile.Active || !rectangle.Intersects(tile.GetWorldRectangle(position))) continue;
+
                     intersectionTile = tile;
                     return true;
                 }
