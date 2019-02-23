@@ -56,7 +56,7 @@ namespace SpaceInvaders
         {
             HandleMovement(deltaTime);
 
-            if (Input.GetKeyDown(Keys.Space))
+            if (Input.GetKey(Keys.Space))
             {
                 MainGame.Context.ProjectileController.CreatePlayerProjectile();
             }

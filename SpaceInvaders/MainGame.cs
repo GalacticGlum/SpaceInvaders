@@ -112,8 +112,8 @@ namespace SpaceInvaders
             EnemyType.Load(Content);
 
             Player = new Player();
-            EnemyGroup = new EnemyGroup();
             BarrierGroup = new BarrierGroup();
+            EnemyGroup = new EnemyGroup();
             ProjectileController = new ProjectileController();
         }
 

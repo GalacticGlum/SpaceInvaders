@@ -3,7 +3,7 @@
  * File Name: ProjectileController.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/09/2019
- * Modified Date: 02/11/2019
+ * Modified Date: 02/14/2019
  * Description: DESCRIPTION
  */
 
@@ -67,6 +67,11 @@ namespace SpaceInvaders
             }
         }
 
+        private void CreateProjectile(Vector2 postion, Projectile prototype)
+        {
+            activateProjectiles[prototype.Type].Add(new Projectile(prototype, postion));
+        }
+
         /// <summary>
         /// Fires a player projectile
         /// if one does not exist yet.
@@ -85,8 +90,12 @@ namespace SpaceInvaders
             Vector2 position = MainGame.Context.Player.Position + offset;
 
             // Get a random player projectile
-            Projectile prototype = GetRandomProjectilePrototype(ProjectileType.Player);
-            activateProjectiles[ProjectileType.Player].Add(new Projectile(prototype, position));
+            CreateProjectile(position, GetRandomProjectilePrototype(ProjectileType.Player));
+        }
+
+        public void CreateEnemyProjectile(Enemy enemy)
+        {
+            
         }
 
         /// <summary>

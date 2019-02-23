@@ -3,7 +3,7 @@
  * File Name: EnemyGroup.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/12/2019
+ * Modified Date: 02/14/2019
  * Description: The top-level logic manager for all enemies.
  */
 
@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
 using SpaceInvaders.Engine;
+
 using MathHelper = SpaceInvaders.Engine.MathHelper;
 using Random = SpaceInvaders.Engine.Random;
 
@@ -104,7 +105,6 @@ namespace SpaceInvaders
         private int movementDirection = 1;
         private float timeToMovement;
         private bool canVerticallyMove;
-
         private bool animationFrameToggle;
 
         public EnemyGroup()
@@ -187,6 +187,8 @@ namespace SpaceInvaders
             {
                 for (int x = 0; x < GroupWidth; x++)
                 {
+                    if (y < GroupHeight - 1 && !enemyGrid[x, y + 1].Active) continue;
+
                     Enemy enemy = enemyGrid[x, y];
                     enemy.AttackTime -= deltaTime;
                     if (enemy.AttackTime <= 0)
@@ -229,18 +231,6 @@ namespace SpaceInvaders
                     spriteBatch.Draw(GetEnemyTexture(enemy), worldRectangle.Position, 
                         null, Color.White, 0, Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.7f);
                 }
-            }
-
-            Enemy? leftMost = GetLeftMostEnemy();
-            if (leftMost.HasValue)
-            {
-                spriteBatch.DrawBorder(GetEnemyWorldRectangle(leftMost.Value), Color.Red, 3, 0.8f);
-            }
-
-            Enemy? rightMost = GetRightMostEnemy();
-            if (rightMost.HasValue)
-            {
-                spriteBatch.DrawBorder(GetEnemyWorldRectangle(rightMost.Value), Color.Blue, 3, 0.8f);
             }
         }
 
@@ -369,9 +359,9 @@ namespace SpaceInvaders
             const float finalMaximumTime = 6;
             const float finalMinimumTime = 0.5f;
 
-            float power = 1 / startingPosition.Y;
+            float power = 1 / (MainGame.Context.BarrierGroup[0].Rectangle.Y - startingPosition.Y);
 
-            float b1 = (float)Math.Pow(initialMinimumTime / initialMaximumTime, power);
+            float b1 = (float) Math.Pow(initialMinimumTime / initialMaximumTime, power);
             float b2 = (float) Math.Pow(finalMinimumTime / finalMaximumTime, power);
 
             float distance = boundingRectangle.Y - startingPosition.Y;

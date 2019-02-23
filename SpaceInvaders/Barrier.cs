@@ -3,11 +3,10 @@
  * File Name: Barrier.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/06/2019
- * Modified Date: 02/10/2019
+ * Modified Date: 02/14/019
  * Description: DESCRIPTION
  */
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
@@ -23,12 +22,11 @@ namespace SpaceInvaders
         /// </summary>
         private const int VerticalSpawnOffset = 10;
 
-        private readonly Vector2 position;
+        public RectangleF Rectangle { get; }
 
         private readonly int tileWidth;
         private readonly int tileHeight;
 
-        private readonly RectangleF boundingRectangle;
         private readonly BarrierTile[,] tiles;
         
         public Barrier(int spawnIndex)
@@ -59,11 +57,9 @@ namespace SpaceInvaders
             float deltaX = (MainGame.HorizontalBoundaryStart.X + MainGame.HorizontalBoundaryEnd.X) / (BarrierGroup.SpawnBarrierCount + 1);
             float xCorrection = totalWidth * 0.5f;
             float spawnX = MainGame.HorizontalBoundaryStart.X + deltaX * (spawnIndex + 1) - xCorrection;
-
             float spawnY =  MainGame.Context.Player.Position.Y - VerticalSpawnOffset * MainGame.ResolutionScale - totalHeight;
-            position = new Vector2(spawnX, spawnY);
 
-            boundingRectangle = new RectangleF(position.X, position.Y, totalWidth, totalHeight);
+            Rectangle = new RectangleF(spawnX, spawnY, totalWidth, totalHeight);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -72,7 +68,7 @@ namespace SpaceInvaders
             {
                 for (int x = 0; x < tileWidth; x++)
                 {
-                    tiles[x, y].Draw(position, spriteBatch);
+                    tiles[x, y].Draw(Rectangle.Position, spriteBatch);
                 }
             }
         }
@@ -83,14 +79,14 @@ namespace SpaceInvaders
             // As a preliminary check, let's see if this rectangle
             // intersects the bounding box at all. Then, we can check
             // the individual tiles.
-            if (!rectangle.Intersects(boundingRectangle)) return false;
+            if (!rectangle.Intersects(Rectangle)) return false;
 
             for (int y = 0; y < tileHeight; y++)
             {
                 for (int x = 0; x < tileWidth; x++)
                 {
                     BarrierTile tile = tiles[x, y];
-                    if (!tile.Active || !rectangle.Intersects(tile.GetWorldRectangle(position))) continue;
+                    if (!tile.Active || !rectangle.Intersects(tile.GetWorldRectangle(Rectangle.Position))) continue;
 
                     intersectionTile = tile;
                     return true;
