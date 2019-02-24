@@ -3,7 +3,7 @@
  * File Name: EnemyGroup.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/14/2019
+ * Modified Date: 02/23/2019
  * Description: The top-level logic manager for all enemies.
  */
 
@@ -54,6 +54,8 @@ namespace SpaceInvaders
         /// The number of pixels to move vertically when an enemy touches the horizontal boundary.
         /// </summary>
         private const float VerticalMovementShift = 5;
+
+        public Enemy this[int x, int y] => enemyGrid[x, y];
 
         /// <summary>
         /// The width of the enemy with the largest width, in pixels.
@@ -183,35 +185,25 @@ namespace SpaceInvaders
                 animationFrameToggle = !animationFrameToggle;
             }
 
-            for (int y = 0; y < GroupHeight; y++)
+            for (int x = 0; x < GroupWidth; x++)
             {
-                for (int x = 0; x < GroupWidth; x++)
+                for (int y = GroupHeight - 1; y >= 0; y--)
                 {
-                    if (y < GroupHeight - 1 && !enemyGrid[x, y + 1].Active) continue;
+                    // Only bottom-most enemies in their respective columns can attack
+                    if (!enemyGrid[x, y].Active || y < GroupHeight - 1 && enemyGrid[x, y + 1].Active) continue;
 
                     Enemy enemy = enemyGrid[x, y];
                     enemy.AttackTime -= deltaTime;
-                    if (enemy.AttackTime <= 0)
-                    {
-                        enemy.AttackTime = GetEnemyAttackTime();
-                        // TODO: Attack!
-                    }
+                    if (!(enemy.AttackTime <= 0)) continue;
+
+                    enemy.AttackTime = GetEnemyAttackTime();
+                    MainGame.Context.ProjectileController.CreateEnemyProjectile(enemy);
+
+                    // Since we have the bottom-most enemy that active, we are done looking
+                    // at the current column.
+                    break;
                 }
             }
-        }
-
-        private bool IsTouchingHorizontalBounds()
-        {
-            Enemy? leftMost = GetLeftMostEnemy();
-            Enemy? rightMost = GetRightMostEnemy();
-
-            if (leftMost.HasValue && rightMost.HasValue)
-            {
-                return GetEnemyWorldRectangle(leftMost.Value).Left <= MainGame.HorizontalBoundaryStart.X ||
-                       GetEnemyWorldRectangle(rightMost.Value).Right >= MainGame.HorizontalBoundaryEnd.X;
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -232,13 +224,43 @@ namespace SpaceInvaders
                         null, Color.White, 0, Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.7f);
                 }
             }
+
+            for (int x = 0; x < GroupWidth; x++)
+            {
+                for (int y = GroupHeight - 1; y >= 0; y--)
+                {
+                    // Only bottom-most enemies in their respective columns can attack
+                    if (!enemyGrid[x,y].Active || y < GroupHeight - 1 && enemyGrid[x, y + 1].Active) continue;
+
+                    RectangleF worldRectangle = GetEnemyWorldRectangle(enemyGrid[x,y]);
+                    spriteBatch.DrawBorder(worldRectangle, Color.Green, 3, 1);
+
+                    // Since we have the bottom-most enemy that active, we are done looking
+                    // at the current column.
+                    break;
+                }
+            }
         }
 
-        private Enemy? GetLeftMostEnemy()
+        private bool IsTouchingHorizontalBounds()
+        {
+            Enemy leftMost = GetLeftMostEnemy();
+            Enemy rightMost = GetRightMostEnemy();
+
+            if (leftMost != null && rightMost != null)
+            {
+                return GetEnemyWorldRectangle(leftMost).Left <= MainGame.HorizontalBoundaryStart.X ||
+                       GetEnemyWorldRectangle(rightMost).Right >= MainGame.HorizontalBoundaryEnd.X;
+            }
+
+            return false;
+        }
+
+        private Enemy GetLeftMostEnemy()
         {
             if (remainingEnemyCount == 0) return null;
 
-            Enemy? leftMostEnemy = null;
+            Enemy leftMostEnemy = null;
             float boundaryX = float.MaxValue;
             for (int x = 0; x < GroupWidth; x++)
             {
@@ -258,11 +280,11 @@ namespace SpaceInvaders
             return leftMostEnemy;
         }
 
-        private Enemy? GetRightMostEnemy()
+        private Enemy GetRightMostEnemy()
         {
             if (remainingEnemyCount == 0) return null;
 
-            Enemy? rightMostEnemy = null;
+            Enemy rightMostEnemy = null;
             float boundaryX = float.MinValue;
             for (int x = GroupWidth - 1; x >= 0; x--)
             {
@@ -282,7 +304,7 @@ namespace SpaceInvaders
             return rightMostEnemy;
         }
 
-        private RectangleF GetEnemyWorldRectangle(Enemy enemy)
+        public RectangleF GetEnemyWorldRectangle(Enemy enemy)
         {
             Texture2D texture = GetEnemyTexture(enemy);
             float paddingX = enemy.Position.X * Padding;
@@ -354,15 +376,14 @@ namespace SpaceInvaders
 
         private float GetEnemyAttackTime()
         {
-            const float initialMaximumTime = 10;
-            const float initialMinimumTime = 4;
+            const float initialMaximumTime = 30;
+            const float initialMinimumTime = 2;
             const float finalMaximumTime = 6;
-            const float finalMinimumTime = 0.5f;
+            const float finalMinimumTime = 1;
 
-            float power = 1 / (MainGame.Context.BarrierGroup[0].Rectangle.Y - startingPosition.Y);
-
-            float b1 = (float) Math.Pow(initialMinimumTime / initialMaximumTime, power);
-            float b2 = (float) Math.Pow(finalMinimumTime / finalMaximumTime, power);
+            float validVerticalDistance = 1 / (MainGame.Context.BarrierGroup[0].Rectangle.Top - startingPosition.Y);
+            float b1 = (float) Math.Pow(initialMinimumTime / initialMaximumTime, validVerticalDistance);
+            float b2 = (float) Math.Pow(finalMinimumTime / finalMaximumTime, validVerticalDistance);
 
             float distance = boundingRectangle.Y - startingPosition.Y;
             float maximumTime = initialMaximumTime * (float) Math.Pow(b1, distance);

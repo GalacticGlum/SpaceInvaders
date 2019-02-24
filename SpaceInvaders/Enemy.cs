@@ -3,7 +3,7 @@
  * File Name: Enemy.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/12/2019
+ * Modified Date: 02/23/2019
  * Description: DESCRIPTION
  */
 
@@ -14,7 +14,7 @@ namespace SpaceInvaders
     /// <summary>
     /// 
     /// </summary>
-    public struct Enemy
+    public class Enemy
     {
         /// <summary>
         /// The position of this <see cref="Enemy"/> in the <see cref="EnemyGroup"/> grid.

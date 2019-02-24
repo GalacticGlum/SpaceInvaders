@@ -250,5 +250,77 @@
             "Width": 1,
             "Height": 4
         }
+    },
+    {
+        "name": "bullet_cross_1",
+        "rectangle": {
+            "X": 103,
+            "Y": 39,
+            "Width": 3,
+            "Height": 6
+        }
+    },
+    {
+        "name": "bullet_cross_2",
+        "rectangle": {
+            "X": 107,
+            "Y": 39,
+            "Width": 3,
+            "Height": 6
+        }
+    },
+    {
+        "name": "bullet_cross_3",
+        "rectangle": {
+            "X": 111,
+            "Y": 39,
+            "Width": 3,
+            "Height": 6
+        }
+    },
+    {
+        "name": "bullet_cross_4",
+        "rectangle": {
+            "X": 115,
+            "Y": 39,
+            "Width": 3,
+            "Height": 6
+        }
+    },
+    {
+        "name": "bullet_cross_5",
+        "rectangle": {
+            "X": 119,
+            "Y": 39,
+            "Width": 3,
+            "Height": 6
+        }
+    },
+    {
+        "name": "bullet_cross_6",
+        "rectangle": {
+            "X": 123,
+            "Y": 39,
+            "Width": 3,
+            "Height": 6
+        }
+    },
+    {
+        "name": "bullet_snake_1",
+        "rectangle": {
+            "X": 100,
+            "Y": 19,
+            "Width": 3,
+            "Height": 7
+        }
+    },
+    {
+        "name": "bullet_snake_2",
+        "rectangle": {
+            "X": 105,
+            "Y": 19,
+            "Width": 3,
+            "Height": 7
+        }
     }
 ]

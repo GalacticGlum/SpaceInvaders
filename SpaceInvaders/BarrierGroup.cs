@@ -3,7 +3,7 @@
  * File Name: BarrierGroup.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/07/2019
- * Modified Date: 02/14/2019
+ * Modified Date: 02/23/2019
  * Description: DESCRIPTION
  */
 
@@ -26,12 +26,12 @@ namespace SpaceInvaders
 
     public class BarrierGroup
     {
-        public Barrier this[int index] => barriers[index];
-
         /// <summary>
         /// The number of barriers to spawn.
         /// </summary>
         public const int SpawnBarrierCount = 4;
+
+        public Barrier this[int index] => barriers[index];
 
         private readonly Barrier[] barriers;
 

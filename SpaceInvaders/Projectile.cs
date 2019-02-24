@@ -3,7 +3,7 @@
  * File Name: Projectile.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/09/2019
- * Modified Date: 02/11/2019
+ * Modified Date: 02/23/2019
  * Description: DESCRIPTION
  */
 
@@ -71,8 +71,8 @@ namespace SpaceInvaders
             rectangle.Position += Velocity * deltaTime;
             HandleAnimation(deltaTime);
 
-            // If the projectile exceeds the top vertical boundary, we need to destroy it.
-            if (rectangle.Position.Y <= MainGame.TopVerticalBoundary)
+            // If the projectile exceeds the top or bottom vertical boundary, we need to destroy it.
+            if (rectangle.Top <= MainGame.TopVerticalBoundary || rectangle.Bottom > MainGame.HorizontalBoundaryY)
             {
                 MainGame.Context.ProjectileController.Remove(this);
             }
@@ -86,7 +86,8 @@ namespace SpaceInvaders
                 MainGame.Context.ProjectileController.Remove(this);
             }
 
-            if (MainGame.Context.EnemyGroup.Intersects(rectangle, out Point enemyHitResult))
+            // Only projectiles fired by the player can collide with enemies.
+            if (Type == ProjectileType.Player && MainGame.Context.EnemyGroup.Intersects(rectangle, out Point enemyHitResult))
             {
                 MainGame.Context.EnemyGroup.RemoveEnemy(enemyHitResult.X, enemyHitResult.Y);
                 MainGame.Context.ProjectileController.Remove(this);
@@ -102,6 +103,7 @@ namespace SpaceInvaders
             animationTimer -= deltaTime;
             if (!(animationTimer <= 0)) return;
 
+            animationTimer = AnimationRate;
             frameCount = (frameCount + 1) % FrameNames.Length;
             rectangle.Width = frameTextures[frameCount].Width * MainGame.ResolutionScale;
             rectangle.Height = frameTextures[frameCount].Height * MainGame.ResolutionScale;

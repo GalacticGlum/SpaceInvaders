@@ -5,24 +5,28 @@
         "frames": [
             "bullet_player"
         ],
-        "animation_rate": 0.25
+        "animation_rate": 0
+    },
+    {
+        "type": "Enemy",
+        "velocity": "0,250",
+        "frames": [
+            "bullet_cross_1",
+            "bullet_cross_2",
+            "bullet_cross_3",
+            "bullet_cross_4",
+            "bullet_cross_5",
+            "bullet_cross_6"
+        ],
+        "animation_rate": 0.05
     },
     {
         "type": "Enemy",
         "velocity": "0,300",
         "frames": [
-            "bullet_cross_1",
-            "bullet_cross_2"
-        ],
-        "animation_rate": 0.25 
-    },
-    {
-        "type": "Enemy",
-        "velocity": "0,350",
-        "frames": [
             "bullet_snake_1",
             "bullet_snake_2"
         ],
-        "animation_rate": 0.25
+        "animation_rate": 0.10
     }
 ]
