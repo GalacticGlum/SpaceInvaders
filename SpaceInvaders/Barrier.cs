@@ -3,8 +3,8 @@
  * File Name: Barrier.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/06/2019
- * Modified Date: 02/14/019
- * Description: DESCRIPTION
+ * Modified Date: 02/24/019
+ * Description: This class provides the gameplay and rendering functionality for a barrier.
  */
 
 using Microsoft.Xna.Framework;
@@ -15,6 +15,9 @@ using SpaceInvaders.Engine;
 
 namespace SpaceInvaders
 {
+    /// <summary>
+    /// This class provides the gameplay and rendering functionality for a <see cref="Barrier"/>.
+    /// </summary>
     public class Barrier
     {
         /// <summary>
@@ -22,13 +25,33 @@ namespace SpaceInvaders
         /// </summary>
         private const int VerticalSpawnOffset = 10;
 
+        /// <summary>
+        /// The bounding <see cref="RectangleF"/> of this <see cref="Barrier"/>.
+        /// </summary>
         public RectangleF Rectangle { get; }
 
+        /// <summary>
+        /// The amount of <see cref="BarrierTile"/> tile objects in a row.
+        /// </summary>
         private readonly int tileWidth;
+
+        /// <summary>
+        /// The amount of <see cref="BarrierTile"/> tile objects in a column.
+        /// </summary>
         private readonly int tileHeight;
 
+        /// <summary>
+        /// A 2D array of <see cref="BarrierTile"/> objects.
+        /// </summary>
         private readonly BarrierTile[,] tiles;
         
+        /// <summary>
+        /// Initializes a new <see cref="Barrier"/>.
+        /// </summary>
+        /// <param name="spawnIndex">
+        /// The index of this <see cref="Barrier"/>.
+        /// Determines the horizontal offset.
+        /// </param>
         public Barrier(int spawnIndex)
         {
             string jsonSource = MainGame.Context.Content.Load<JsonObject>("BarrierLayout").JsonSource;
@@ -62,6 +85,10 @@ namespace SpaceInvaders
             Rectangle = new RectangleF(spawnX, spawnY, totalWidth, totalHeight);
         }
 
+        /// <summary>
+        /// Renders this <see cref="Barrier"/>.
+        /// </summary>
+        /// <param name="spriteBatch">The <see cref="SpriteBatch"/> context.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
             for (int y = 0; y < tileHeight; y++)
@@ -73,9 +100,19 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="RectangleF"/> intersects with this <see cref="Barrier"/>.
+        /// </summary>
+        /// <param name="rectangle">The <see cref="RectangleF"/> to check for intersection.</param>
+        /// <param name="intersectionTile">A <see cref="BarrierTile"/> indicating the intersecting <see cref="BarrierTile"/>.</param>
+        /// <returns>
+        /// A boolean value indicating whether an intersection occured.
+        /// Value <c>true</c> if they do intersect; otherwise, <c>false</c>.
+        /// </returns>
         public bool Intersects(RectangleF rectangle, out BarrierTile intersectionTile)
         {
             intersectionTile = null;
+
             // As a preliminary check, let's see if this rectangle
             // intersects the bounding box at all. Then, we can check
             // the individual tiles.
