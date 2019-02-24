@@ -400,7 +400,9 @@ namespace SpaceInvaders
             Enemy enemy = enemyGrid[x, y];
             enemy.Active = false;
             remainingEnemyCount -= 1;
+
             activeExplosions.Add(new Tuple<Enemy, float>(enemy, ExplosionTime));
+            MainGame.Context.Player.Score += enemy.Type.Points;
         }
 
         /// <summary>

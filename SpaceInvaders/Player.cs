@@ -3,7 +3,7 @@
  * File Name: Player.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/09/2019
+ * Modified Date: 02/24/2019
  * Description: DESCRIPTION
  */
 
@@ -26,6 +26,11 @@ namespace SpaceInvaders
         /// The horizontal speed in pixels per second.
         /// </summary>
         private const int HorizontalSpeed = 200;
+
+        /// <summary>
+        /// The score of this <see cref="Player"/>.
+        /// </summary>
+        public int Score { get; set; } = 0;
 
         /// <summary>
         /// The position of this <see cref="Player"/>.

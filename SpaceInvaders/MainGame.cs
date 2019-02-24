@@ -3,7 +3,7 @@
  * File Name: MainGame.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/11/2019
+ * Modified Date: 02/24/2019
  * Description: The core engine instance of the game that spawns all other entities
  *              and simulates logic and rendering.
  */
@@ -55,7 +55,6 @@ namespace SpaceInvaders
         /// </summary>
         public static readonly Vector2 HorizontalBoundaryEnd = new Vector2(GameScreenWidth - HorizontalBoundarySize, HorizontalBoundaryY);
 
-
         /// <summary>
         /// The current instance of this <see cref="MainGame"/>.
         /// </summary>
@@ -74,6 +73,7 @@ namespace SpaceInvaders
 
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        private SpriteFont hudSpriteFont;
 
         public MainGame()
         {
@@ -108,6 +108,7 @@ namespace SpaceInvaders
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             MainTextureAtlas = new TextureAtlas("MainAtlas", GraphicsDevice, Content);
+            hudSpriteFont = Content.Load<SpriteFont>("SpaceInvadersFont");
 
             // Load all the enemy types
             EnemyType.Load(Content);
@@ -154,6 +155,10 @@ namespace SpaceInvaders
             BarrierGroup.Draw(spriteBatch);
             ProjectileController.Draw(spriteBatch);
             UfoController.Draw(spriteBatch);
+
+            // Draw the HUD
+            spriteBatch.DrawString(hudSpriteFont, "SCORE", Vector2.Zero, Color.White);
+            spriteBatch.DrawString(hudSpriteFont, Player.Score.ToString(), new Vector2(hudSpriteFont.MeasureString("SCORE").X, 0), ColourHelpers.PureGreen);
 
             spriteBatch.End();
         }

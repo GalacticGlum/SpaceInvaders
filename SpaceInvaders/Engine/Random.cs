@@ -3,7 +3,7 @@
  * File Name: Random.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/09/2019
- * Modified Date: 02/09/2019
+ * Modified Date: 02/24/2019
  * Description: Facility for generating random data.
  */
 
@@ -86,5 +86,13 @@ namespace SpaceInvaders.Engine
         /// <param name="min">The minimum value (inclusive).</param>
         /// <param name="max">The maximum value (exclusive).</param>
         public static double Range(double min, double max) => randomEngine.NextDouble() * (max - min) + min;
+        
+        /// <summary>
+        /// Gets a random element from the specified array.
+        /// </summary>
+        /// <typeparam name="T">The type of the array.</typeparam>
+        /// <param name="array">The array.</param>
+        /// <returns>A random element of type <typeparamref name="T"/> from the specified array.</returns>
+        public static T Choose<T>(this T[] array) => array[Range(0, array.Length)];
     }
 }
