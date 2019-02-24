@@ -331,5 +331,14 @@
             "Width": 13,
             "Height": 8
         }
+    },
+    {
+        "name": "ufo",
+        "rectangle": {
+            "X": 2,
+            "Y": 4,
+            "Width": 16,
+            "Height": 7
+        }
     }
 ]

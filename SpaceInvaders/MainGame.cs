@@ -70,6 +70,7 @@ namespace SpaceInvaders
         public EnemyGroup EnemyGroup { get; private set; }
         public BarrierGroup BarrierGroup { get; private set; }
         public ProjectileController ProjectileController { get; private set; }
+        public UfoController UfoController { get; private set; }
 
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
@@ -115,6 +116,7 @@ namespace SpaceInvaders
             BarrierGroup = new BarrierGroup();
             EnemyGroup = new EnemyGroup();
             ProjectileController = new ProjectileController();
+            UfoController = new UfoController();
         }
 
         /// <summary>
@@ -133,6 +135,7 @@ namespace SpaceInvaders
             Player.Update(deltaTime);
             EnemyGroup.Update(deltaTime);
             ProjectileController.Update(deltaTime);
+            UfoController.Update(deltaTime);
         }
 
         /// <summary>
@@ -150,6 +153,7 @@ namespace SpaceInvaders
             EnemyGroup.Draw(spriteBatch);
             BarrierGroup.Draw(spriteBatch);
             ProjectileController.Draw(spriteBatch);
+            UfoController.Draw(spriteBatch);
 
             spriteBatch.End();
         }

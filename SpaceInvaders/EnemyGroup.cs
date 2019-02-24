@@ -70,6 +70,11 @@ namespace SpaceInvaders
         public Enemy this[int x, int y] => enemyGrid[x, y];
 
         /// <summary>
+        /// The starting coordinates of this <see cref="EnemyGroup"/>.
+        /// </summary>
+        public Vector2 StartingPosition { get; }
+
+        /// <summary>
         /// The width of the enemy with the largest width, in pixels.
         /// </summary>
         private readonly int largestEnemyWidth;
@@ -108,11 +113,6 @@ namespace SpaceInvaders
         /// explosion effect should turn off.
         /// </summary>
         private readonly List<Tuple<Enemy, float>> activeExplosions;
-
-        /// <summary>
-        /// The starting coordinates of this <see cref="EnemyGroup"/>.
-        /// </summary>
-        private readonly Vector2 startingPosition;
 
         /// <summary>
         /// The number of enemies in this <see cref="EnemyGroup"/> that are not dead.
@@ -164,7 +164,7 @@ namespace SpaceInvaders
             boundingRectangle = new RectangleF(positionX, positionY, totalWidth, totalHeight);
 
             timeToMovement = GetMovementTime();
-            startingPosition = boundingRectangle.Position;
+            StartingPosition = boundingRectangle.Position;
         }
 
         /// <summary>
@@ -480,11 +480,11 @@ namespace SpaceInvaders
             // The final minimum time until an enemy attacks, in seconds; the value of f(d).
             const float finalMinimumTime = 1;
 
-            float validVerticalDistance = 1 / (MainGame.Context.BarrierGroup[0].Rectangle.Top - startingPosition.Y);
+            float validVerticalDistance = 1 / (MainGame.Context.BarrierGroup[0].Rectangle.Top - StartingPosition.Y);
             float b1 = (float) Math.Pow(initialMinimumTime / initialMaximumTime, validVerticalDistance);
             float b2 = (float) Math.Pow(finalMinimumTime / finalMaximumTime, validVerticalDistance);
 
-            float distance = boundingRectangle.Y - startingPosition.Y;
+            float distance = boundingRectangle.Y - StartingPosition.Y;
             float maximumTime = initialMaximumTime * (float) Math.Pow(b1, distance);
             float minimumTime = finalMaximumTime * (float) Math.Pow(b2, distance);
 
