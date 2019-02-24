@@ -22,7 +22,7 @@ using Random = SpaceInvaders.Engine.Random;
 namespace SpaceInvaders
 {
     /// <summary>
-    /// The top-level logic manager for all enemies.
+    /// The top-level logic manager for all the <see cref="Enemy"/> instances.
     /// </summary>
     public class EnemyGroup
     {
