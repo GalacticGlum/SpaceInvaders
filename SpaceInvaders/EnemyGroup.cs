@@ -3,7 +3,7 @@
  * File Name: EnemyGroup.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
- * Modified Date: 02/23/2019
+ * Modified Date: 02/24/2019
  * Description: The top-level logic manager for all enemies.
  */
 
@@ -61,6 +61,12 @@ namespace SpaceInvaders
         /// </summary>
         private const float ExplosionTime = 0.15f;
 
+        /// <summary>
+        /// Gets or sets the <see cref="Enemy"/> at the specified coordinate.
+        /// </summary>
+        /// <param name="x">The x-coordinate of the <see cref="Enemy"/> in this <see cref="EnemyGroup"/>.</param>
+        /// <param name="y">The y-coordinate of the <see cref="Enemy"/> in this <see cref="EnemyGroup"/>.</param>
+        /// <returns></returns>
         public Enemy this[int x, int y] => enemyGrid[x, y];
 
         /// <summary>
@@ -123,6 +129,9 @@ namespace SpaceInvaders
         private bool canVerticallyMove;
         private bool animationFrameToggle;
 
+        /// <summary>
+        /// Initializes a new <see cref="EnemyGroup"/>.
+        /// </summary>
         public EnemyGroup()
         {
             activeExplosions = new List<Tuple<Enemy, float>>();
@@ -274,6 +283,10 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Determines whether any enemy is touching the horizontal bounds.
+        /// </summary>
+        /// <returns>A boolean value indicating whether an enemy is touching the horizontal bounds.</returns>
         private bool IsTouchingHorizontalBounds()
         {
             Enemy leftMost = GetLeftMostEnemy();
@@ -288,6 +301,9 @@ namespace SpaceInvaders
             return false;
         }
 
+        /// <summary>
+        /// Gets the left-most active enemy in this <see cref="EnemyGroup"/>.
+        /// </summary>
         private Enemy GetLeftMostEnemy()
         {
             if (remainingEnemyCount == 0) return null;
@@ -311,7 +327,10 @@ namespace SpaceInvaders
 
             return leftMostEnemy;
         }
-
+        
+        /// <summary>
+        /// Gets the right-most active enemy in this <see cref="EnemyGroup"/>.
+        /// </summary>
         private Enemy GetRightMostEnemy()
         {
             if (remainingEnemyCount == 0) return null;
@@ -336,6 +355,11 @@ namespace SpaceInvaders
             return rightMostEnemy;
         }
 
+        /// <summary>
+        /// Gets the world <see cref="RectangleF"/> for the specified <see cref="Enemy"/>.
+        /// </summary>
+        /// <param name="enemy">The <see cref="Enemy"/>.</param>
+        /// <returns>A <see cref="RectangleF"/> value.</returns>
         public RectangleF GetEnemyWorldRectangle(Enemy enemy)
         {
             Texture2D texture = GetEnemyTexture(enemy);
@@ -354,9 +378,23 @@ namespace SpaceInvaders
                 texture.Width * MainGame.ResolutionScale, texture.Height * MainGame.ResolutionScale);
         }
 
+        /// <summary>
+        /// Gets the associated texture for the specified <see cref="Enemy"/>.
+        /// </summary>
+        /// <param name="enemy">The <see cref="Enemy"/>.</param>
+        /// <returns>A <see cref="Texture2D"/> value; the texture for the enemy.</returns>
         private Texture2D GetEnemyTexture(Enemy enemy) =>
             MainGame.Context.MainTextureAtlas[$"enemy_{enemy.Type}_{(animationFrameToggle ? 2 : 1)}"];
 
+        /// <summary>
+        /// Removes an <see cref="Enemy"/> at the specified coordinates from this <see cref="EnemyGroup"/>.
+        /// <remarks>
+        /// Removing an enemy does not invoke an memory deallocation; it only refers to setting the <see cref="Enemy"/> to inactive entity
+        /// (i.e. the enemy will not draw or update nor will it be considered in any enemy logic).
+        /// </remarks>
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void RemoveEnemy(int x, int y)
         {
             Enemy enemy = enemyGrid[x, y];
@@ -365,6 +403,15 @@ namespace SpaceInvaders
             activeExplosions.Add(new Tuple<Enemy, float>(enemy, ExplosionTime));
         }
 
+        /// <summary>
+        /// Determines whether the specified <see cref="RectangleF"/> intersects with this <see cref="EnemyGroup"/>.
+        /// </summary>
+        /// <param name="rectangle">The <see cref="RectangleF"/> to check for intersection.</param>
+        /// <param name="result">A <see cref="Point"/> indicating the coordinate of the intersecting <see cref="Enemy"/> in this <see cref="EnemyGroup"/>.</param>
+        /// <returns>
+        /// A boolean value indicating whether an intersection occured.
+        /// Value <c>true</c> if they do intersect; otherwise, <c>false</c>.
+        /// </returns>
         public bool Intersects(RectangleF rectangle, out Point result)
         {
             result = Point.Zero;
