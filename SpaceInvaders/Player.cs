@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Author: Shon Verch
  * File Name: Player.cs
  * Project Name: SpaceInvaders
@@ -23,6 +23,16 @@ namespace SpaceInvaders
         public const int VerticalSpawnOffset = 29;
 
         /// <summary>
+        /// The amount of lives that a <see cref="Player"/> starts with.
+        /// </summary>
+        public const int DefaultLives = 3;
+
+        /// <summary>
+        /// The maximum amount of lives that a <see cref="Player"/> can have.
+        /// </summary>
+        public const int MaxLives = 4;
+
+        /// <summary>
         /// The horizontal speed in pixels per second.
         /// </summary>
         private const int HorizontalSpeed = 200;
@@ -33,9 +43,9 @@ namespace SpaceInvaders
         public int Score { get; set; } = 0;
 
         /// <summary>
-        /// The position of this <see cref="Player"/>.
+        /// The number of lives that this <see cref="Player"/> has remaining.
         /// </summary>
-        public Vector2 Position { get; private set; }
+        public int Lives { get; set; } = DefaultLives;
 
         /// <summary>
         /// The texture of this <see cref="Player"/>.
@@ -47,20 +57,23 @@ namespace SpaceInvaders
         /// </summary>
         private readonly float maxHorizontalCoordinate;
 
+        /// <summary>
+        /// The bounding <see cref="RectangleF"/> of this <see cref="Player"/>.
+        /// </summary>
+        private RectangleF boundingRectangle;
+
         public Player()
         {
             Texture = MainGame.Context.MainTextureAtlas["player"];
 
             float playerY = MainGame.HorizontalBoundaryY - Texture.Height * MainGame.ResolutionScale - VerticalSpawnOffset;
-            Position = new Vector2(MainGame.GameScreenWidth * 0.25f, playerY);
-
+            boundingRectangle = new RectangleF(MainGame.GameScreenWidth * 0.25f, playerY, Texture.Width, Texture.Height);
             maxHorizontalCoordinate = MainGame.HorizontalBoundaryEnd.X - Texture.Width * MainGame.ResolutionScale;
         }
 
         public void Update(float deltaTime)
         {
             HandleMovement(deltaTime);
-
             if (Input.GetKey(Keys.Space))
             {
                 MainGame.Context.ProjectileController.CreatePlayerProjectile();
@@ -80,13 +93,15 @@ namespace SpaceInvaders
                 velocity = 1;
             }
 
-            float newX = MathHelper.Clamp(Position.X + velocity * HorizontalSpeed * deltaTime, MainGame.HorizontalBoundaryStart.X, maxHorizontalCoordinate);
-            Position = new Vector2(newX, Position.Y);
+            float newX = MathHelper.Clamp(boundingRectangle.X + velocity * HorizontalSpeed * deltaTime, MainGame.HorizontalBoundaryStart.X, maxHorizontalCoordinate);
+            boundingRectangle.X = newX;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.5f);
+            spriteBatch.Draw(Texture, boundingRectangle.Position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.5f);
         }
+
+        public bool Intersects(RectangleF rectangle) => boundingRectangle.Intersects(rectangle);
     }
 }

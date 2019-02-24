@@ -56,6 +56,11 @@ namespace SpaceInvaders
         public static readonly Vector2 HorizontalBoundaryEnd = new Vector2(GameScreenWidth - HorizontalBoundarySize, HorizontalBoundaryY);
 
         /// <summary>
+        /// The vertical padding for HUD elements, in pixels.
+        /// </summary>
+        private static readonly Vector2 HudPadding = new Vector2(HorizontalBoundarySize, 10);
+
+        /// <summary>
         /// The current instance of this <see cref="MainGame"/>.
         /// </summary>
         public static MainGame Context { get; private set; }
@@ -156,11 +161,44 @@ namespace SpaceInvaders
             ProjectileController.Draw(spriteBatch);
             UfoController.Draw(spriteBatch);
 
-            // Draw the HUD
-            spriteBatch.DrawString(hudSpriteFont, "SCORE", Vector2.Zero, Color.White);
-            spriteBatch.DrawString(hudSpriteFont, Player.Score.ToString(), new Vector2(hudSpriteFont.MeasureString("SCORE").X, 0), ColourHelpers.PureGreen);
+            DrawUI();
 
             spriteBatch.End();
+        }
+
+        private void DrawUI()
+        {
+            const int hudElementPadding = 10;
+
+            spriteBatch.DrawString(hudSpriteFont, "SCORE", HudPadding, Color.White);
+            spriteBatch.DrawString(hudSpriteFont, Player.Score.ToString(), new Vector2(hudSpriteFont.MeasureString("SCORE").X + hudElementPadding, 0) + HudPadding, 
+                ColourHelpers.PureGreen);
+            
+            Texture2D playerTexture = MainTextureAtlas["player"];
+            Texture2D playerOutlineTexture = MainTextureAtlas["player"];
+
+            Vector2 livesTextSize = hudSpriteFont.MeasureString("LIVES");
+            float playerTextureScale = livesTextSize.Y / playerTexture.Height;
+            float playerOutlineTextureScale = livesTextSize.Y / playerOutlineTexture.Height;
+
+            float widthA = Player.Lives * playerTexture.Width * playerTextureScale;
+            float widthB = (Player.MaxLives - Player.Lives) * playerOutlineTexture.Width * playerOutlineTextureScale;
+            float livesWidth = widthA + widthB + (Player.MaxLives - 1) * hudElementPadding;
+
+            float livesStartingPositionX = GameScreenWidth - HudPadding.X - livesWidth;
+            float textPositionX = livesStartingPositionX - hudElementPadding - livesTextSize.X;
+
+            spriteBatch.DrawString(hudSpriteFont, "LIVES", new Vector2(textPositionX, HudPadding.Y), Color.White);
+            for (int i = 0; i < Player.MaxLives; ++i)
+            {
+                if(Player.Lives <= Player.DefaultLives && i > Player.DefaultLives - 1) continue;
+
+                Texture2D texture = i < Player.Lives ? playerTexture : playerOutlineTexture;
+                float scale = i < Player.Lives ? playerTextureScale : playerOutlineTextureScale;
+                Vector2 position = new Vector2(livesStartingPositionX + i * (hudElementPadding + texture.Width * scale), HudPadding.Y);
+
+                spriteBatch.Draw(texture, position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, scale, SpriteEffects.None, 0.5f);
+            }
         }
 
         protected override void OnExiting(object sender, EventArgs args)

@@ -142,7 +142,7 @@ namespace SpaceInvaders
             {
                 for (int x = 0; x < GroupWidth; x++)
                 {
-                    enemyGrid[x, y] = new Enemy(new Vector2(x, y), enemyTypeLayers[y], GetEnemyAttackTime());
+                    enemyGrid[x, y] = new Enemy(new Vector2(x, y), enemyTypeLayers[y]);
                 }
             }
 
@@ -222,6 +222,16 @@ namespace SpaceInvaders
                     if (!(enemy.AttackTime <= 0)) continue;
 
                     enemy.AttackTime = GetEnemyAttackTime();
+
+                    // If this enemy has not attacked since the start of the game, it means that 
+                    // the attack time was only generated this frame; hence, let's return and
+                    // turn off the flag.
+                    if (!enemy.HasAttacked)
+                    {
+                        enemy.HasAttacked = true;
+                        return;
+                    }
+
                     MainGame.Context.ProjectileController.CreateEnemyProjectile(enemy);
 
                     // Since we have the bottom-most enemy that active, we are done looking

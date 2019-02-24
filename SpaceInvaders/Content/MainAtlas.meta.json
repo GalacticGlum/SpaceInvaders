@@ -9,6 +9,33 @@
         }
     },
     {
+        "name": "player_outline",
+        "rectangle": {
+            "X": 106,
+            "Y": 48,
+            "Width": 15,
+            "Height": 8
+        }
+    },
+    {
+        "name": "player_death_1",
+        "rectangle": {
+            "X": 53,
+            "Y": 18,
+            "Width": 15,
+            "Height": 8
+        }
+    },
+    {
+        "name": "player_death_2",
+        "rectangle": {
+            "X": 70,
+            "Y": 18,
+            "Width": 15,
+            "Height": 8
+        }
+    },
+    {
         "name":"enemy_Big_1",
         "rectangle": {
             "X": 21,

@@ -37,17 +37,22 @@ namespace SpaceInvaders
         public float AttackTime { get; set; }
 
         /// <summary>
+        /// Indicates whether this <see cref="Enemy"/> has attacked.
+        /// </summary>
+        public bool HasAttacked { get; set; } = false;
+
+        /// <summary>
         /// Initializes a new <see cref="Enemy"/>.
         /// </summary>
         /// <param name="position">The position of this <see cref="Enemy"/> in the <see cref="EnemyGroup"/> grid.</param>
         /// <param name="type">The type of this <see cref="Enemy"/>.</param>
         /// <param name="attackTime">The time, in seconds, until this <see cref="Enemy"/> should attack.</param>
-        public Enemy(Vector2 position, EnemyType type, float attackTime)
+        public Enemy(Vector2 position, EnemyType type)
         {
             Position = position;
             Type = type;
             Active = true;
-            AttackTime = attackTime;
+            AttackTime = 0;
         }
     }
 }

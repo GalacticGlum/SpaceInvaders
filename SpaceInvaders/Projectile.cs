@@ -3,10 +3,11 @@
  * File Name: Projectile.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/09/2019
- * Modified Date: 02/23/2019
+ * Modified Date: 02/24/2019
  * Description: DESCRIPTION
  */
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
@@ -86,17 +87,29 @@ namespace SpaceInvaders
                 MainGame.Context.ProjectileController.Remove(this);
             }
 
-            // Only projectiles fired by the player can collide with enemies.
-            if (Type == ProjectileType.Player && MainGame.Context.EnemyGroup.Intersects(rectangle, out Point enemyHitResult))
+            // Only projectiles fired by a certain entity can collide with other entities.
+            // For example, only projectiles fired by the player can collide with enemies.
+            switch (Type)
             {
-                MainGame.Context.EnemyGroup.RemoveEnemy(enemyHitResult.X, enemyHitResult.Y);
-                MainGame.Context.ProjectileController.Remove(this);
-            }
+                case ProjectileType.Player:
+                    if (MainGame.Context.EnemyGroup.Intersects(rectangle, out Point enemyHitResult))
+                    {
+                        MainGame.Context.EnemyGroup.RemoveEnemy(enemyHitResult.X, enemyHitResult.Y);
+                        MainGame.Context.ProjectileController.Remove(this);
+                    }
 
-            if (Type == ProjectileType.Player && MainGame.Context.UfoController.Intersects(rectangle))
-            {
-                MainGame.Context.UfoController.Destroy();
-                MainGame.Context.ProjectileController.Remove(this);
+                    if (MainGame.Context.UfoController.Intersects(rectangle))
+                    {
+                        MainGame.Context.UfoController.Destroy();
+                        MainGame.Context.ProjectileController.Remove(this);
+                    }
+
+                    break;
+                case ProjectileType.Enemy:
+
+                    if(MainGame.Context.Player.)
+
+                    break;
             }
         }
 
