@@ -8,6 +8,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -55,6 +56,11 @@ namespace SpaceInvaders
         /// </summary>
         private const float VerticalMovementShift = 5;
 
+        /// <summary>
+        /// The time, in seconds, that an explosion effect will remain on screen.
+        /// </summary>
+        private const float ExplosionTime = 0.15f;
+
         public Enemy this[int x, int y] => enemyGrid[x, y];
 
         /// <summary>
@@ -90,6 +96,14 @@ namespace SpaceInvaders
         private readonly Enemy[,] enemyGrid;
 
         /// <summary>
+        /// A list of (<see cref="Enemy"/>, <see cref="float"/>) tuples containing
+        /// where the first value of the tuple indicates the <see cref="Enemy"/> that
+        /// exploded and the second value indicates the time, in seconds, until the
+        /// explosion effect should turn off.
+        /// </summary>
+        private readonly List<Tuple<Enemy, float>> activeExplosions;
+
+        /// <summary>
         /// The starting coordinates of this <see cref="EnemyGroup"/>.
         /// </summary>
         private readonly Vector2 startingPosition;
@@ -111,6 +125,8 @@ namespace SpaceInvaders
 
         public EnemyGroup()
         {
+            activeExplosions = new List<Tuple<Enemy, float>>();
+
             enemyGrid = new Enemy[GroupWidth, GroupHeight];
             EnemyType[] enemyTypeLayers = LoadEnemyTypeLayers();
             for (int y = 0; y < GroupHeight; y++)
@@ -204,6 +220,15 @@ namespace SpaceInvaders
                     break;
                 }
             }
+
+            for (int i = activeExplosions.Count - 1; i >= 0; i--)
+            {
+                activeExplosions[i] = new Tuple<Enemy, float>(activeExplosions[i].Item1, activeExplosions[i].Item2 - deltaTime);
+                if (activeExplosions[i].Item2 <= 0)
+                {
+                    activeExplosions.RemoveAt(i);
+                }
+            }
         }
 
         /// <summary>
@@ -239,6 +264,13 @@ namespace SpaceInvaders
                     // at the current column.
                     break;
                 }
+            }
+
+            foreach (Tuple<Enemy, float> explosion in activeExplosions)
+            {
+                RectangleF worldRectangle = GetEnemyWorldRectangle(explosion.Item1);
+                spriteBatch.Draw(MainGame.Context.MainTextureAtlas["explosion"], worldRectangle.Position, 
+                    null, Color.White, 0, Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.7f);
             }
         }
 
@@ -327,8 +359,10 @@ namespace SpaceInvaders
 
         public void RemoveEnemy(int x, int y)
         {
-            enemyGrid[x, y].Active = false;
+            Enemy enemy = enemyGrid[x, y];
+            enemy.Active = false;
             remainingEnemyCount -= 1;
+            activeExplosions.Add(new Tuple<Enemy, float>(enemy, ExplosionTime));
         }
 
         public bool Intersects(RectangleF rectangle, out Point result)
@@ -374,11 +408,29 @@ namespace SpaceInvaders
             return 1 / (intensityCoefficient * (hx - 0.25f));
         }
 
+        /// <summary>
+        /// <para>
+        /// Gets the time until an <see cref="Enemy"/> can attack, in seconds, implemented as a range
+        /// between a pair of exponential functions.
+        /// </para>
+        /// <remarks>
+        /// More formally, the upper and lower bounds of the enemy attack times are given by a pair of functions
+        /// f(x) and g(x) where f(x) represents the maximum time, g(x) represents the minimum time, and x represents the
+        /// change in the vertical distance, in pixels (x in [0, d] where d represents the max vertical distance).
+        /// The enemy attack time is defined as a random value uniformly distributed on [f(x), g(x)]: t(x) ~ U([f(x), g(x)])
+        /// where U represents the distribution function. For the full equations, see <see href="https://www.desmos.com/calculator/wzpbqmwmwt"></see>.
+        /// </remarks>
+        /// </summary>
+        /// <returns></returns>
         private float GetEnemyAttackTime()
         {
+            // The initial maximum time until an enemy attacks, in seconds; the value of g(0).
             const float initialMaximumTime = 30;
+            // The initial minimum time until an enemy attacks, in seconds; the value of f(0).
             const float initialMinimumTime = 2;
+            // The final maximum time until an enemy attacks, in seconds; the value of g(d).
             const float finalMaximumTime = 6;
+            // The final minimum time until an enemy attacks; the value of f(d).
             const float finalMinimumTime = 1;
 
             float validVerticalDistance = 1 / (MainGame.Context.BarrierGroup[0].Rectangle.Top - startingPosition.Y);

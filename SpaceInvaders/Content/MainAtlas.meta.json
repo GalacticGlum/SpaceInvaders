@@ -322,5 +322,14 @@
             "Width": 3,
             "Height": 7
         }
+    },
+    {
+        "name": "explosion",
+        "rectangle": {
+            "X": 102,
+            "Y": 3,
+            "Width": 13,
+            "Height": 8
+        }
     }
 ]

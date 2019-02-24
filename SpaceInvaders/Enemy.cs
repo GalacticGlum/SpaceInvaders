@@ -4,7 +4,7 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
  * Modified Date: 02/23/2019
- * Description: DESCRIPTION
+ * Description: A data-class for storing enemy data.
  */
 
 using Microsoft.Xna.Framework;
@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 namespace SpaceInvaders
 {
     /// <summary>
-    /// 
+    /// A data-class for storing enemy data.
     /// </summary>
     public class Enemy
     {
