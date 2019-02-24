@@ -10,6 +10,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using SpaceInvaders.Engine;
 using Random = SpaceInvaders.Engine.Random;
 
 namespace SpaceInvaders
@@ -21,29 +22,34 @@ namespace SpaceInvaders
         private const int HorizontalSpeed = 100;
         private const int VerticalSpawnPadding = 10;
 
+        private readonly Texture2D ufoTexture;
+
         private float timeToSpawn;
 
-        private Vector2 currentPosition;
+        private RectangleF BoundingRectangle;
         private int movementDirection;
         private bool isUfoActive;
 
         public UfoController()
         {
             timeToSpawn = Random.Range(MinimumSpawnTime, MaximumSpawnTime);
+
+            ufoTexture = MainGame.Context.MainTextureAtlas["ufo"];
+            BoundingRectangle = new RectangleF(0, 0, ufoTexture.Width * MainGame.ResolutionScale,
+                ufoTexture.Height * MainGame.ResolutionScale);
         }
 
         public void Update(float deltaTime)
         {
-            Texture2D ufoTexture = MainGame.Context.MainTextureAtlas["ufo"];
             float ufoWidth = ufoTexture.Width * MainGame.ResolutionScale;
 
             if (isUfoActive)
             {
-                currentPosition += new Vector2(HorizontalSpeed * movementDirection, 0) * deltaTime;
+                BoundingRectangle.X += HorizontalSpeed * movementDirection * deltaTime;
 
                 // Check if the UFO has gone out of bounds
-                if (movementDirection == 1 && currentPosition.X - ufoWidth * MainGame.ResolutionScale > MainGame.GameScreenWidth ||
-                    movementDirection == -1 && currentPosition.X < -ufoWidth)
+                if (movementDirection == 1 && BoundingRectangle.X - ufoWidth * MainGame.ResolutionScale > MainGame.GameScreenWidth ||
+                    movementDirection == -1 && BoundingRectangle.X < -ufoWidth)
                 {
                     Destroy();
                 }
@@ -61,7 +67,7 @@ namespace SpaceInvaders
 
                 float positionY = MainGame.TopVerticalBoundary + ufoTexture.Height * MainGame.ResolutionScale + VerticalSpawnPadding;
                 float positionX = left ? -ufoWidth : MainGame.GameScreenWidth + ufoWidth;
-                currentPosition = new Vector2(positionX, positionY);
+                BoundingRectangle.Position = new Vector2(positionX, positionY);
                 timeToSpawn = Random.Range(MinimumSpawnTime, MaximumSpawnTime);
                 Console.WriteLine(timeToSpawn);
             }
@@ -71,8 +77,7 @@ namespace SpaceInvaders
         {
             if (!isUfoActive) return;
 
-            Texture2D ufoTexture = MainGame.Context.MainTextureAtlas["ufo"];
-            spriteBatch.Draw(ufoTexture, currentPosition, null, Color.Red, 0, Vector2.Zero, 
+            spriteBatch.Draw(ufoTexture, BoundingRectangle.Position, null, Color.Red, 0, Vector2.Zero, 
                 MainGame.ResolutionScale, SpriteEffects.None, 0.5f);
         }
 
@@ -80,5 +85,7 @@ namespace SpaceInvaders
         {
             isUfoActive = false;
         }
+
+        public bool Intersects(RectangleF rectangle) => isUfoActive && BoundingRectangle.Intersects(rectangle);
     }
 }

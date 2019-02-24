@@ -92,6 +92,12 @@ namespace SpaceInvaders
                 MainGame.Context.EnemyGroup.RemoveEnemy(enemyHitResult.X, enemyHitResult.Y);
                 MainGame.Context.ProjectileController.Remove(this);
             }
+
+            if (Type == ProjectileType.Player && MainGame.Context.UfoController.Intersects(rectangle))
+            {
+                MainGame.Context.UfoController.Destroy();
+                MainGame.Context.ProjectileController.Remove(this);
+            }
         }
 
         private void HandleAnimation(float deltaTime)
