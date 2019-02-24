@@ -417,7 +417,7 @@ namespace SpaceInvaders
         /// More formally, the upper and lower bounds of the enemy attack times are given by a pair of functions
         /// f(x) and g(x) where f(x) represents the maximum time, g(x) represents the minimum time, and x represents the
         /// change in the vertical distance, in pixels (x in [0, d] where d represents the max vertical distance).
-        /// The enemy attack time is defined as a random value uniformly distributed on [f(x), g(x)]: t(x) ~ U([f(x), g(x)])
+        /// The enemy attack time, t(x), is defined as a random value uniformly distributed on [f(x), g(x)]: t(x) ~ U([f(x), g(x)])
         /// where U represents the distribution function. For the full equations, see <see href="https://www.desmos.com/calculator/wzpbqmwmwt"></see>.
         /// </remarks>
         /// </summary>
@@ -430,7 +430,7 @@ namespace SpaceInvaders
             const float initialMinimumTime = 2;
             // The final maximum time until an enemy attacks, in seconds; the value of g(d).
             const float finalMaximumTime = 6;
-            // The final minimum time until an enemy attacks; the value of f(d).
+            // The final minimum time until an enemy attacks, in seconds; the value of f(d).
             const float finalMinimumTime = 1;
 
             float validVerticalDistance = 1 / (MainGame.Context.BarrierGroup[0].Rectangle.Top - startingPosition.Y);
