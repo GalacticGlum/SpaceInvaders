@@ -61,8 +61,10 @@ namespace SpaceInvaders
             set
             {
                 if (value == lives) return;
-                lives = MathHelper.Clamp(lives, 0, MaxLives);
+                int oldLives = lives;
+                lives = MathHelper.Clamp(value, 0, MaxLives);
 
+                if (oldLives <= lives) return;
                 if (lives > 0)
                 {
                     MainGame.Context.Freeze(DeathAnimationDuration);

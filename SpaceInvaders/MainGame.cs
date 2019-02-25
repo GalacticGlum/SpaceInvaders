@@ -179,7 +179,6 @@ namespace SpaceInvaders
 
         private void UpdateGameplay(float deltaTime)
         {
-
             // We NEED to update input before we execute game logic
             // so that the gameplay does not lag by a frame (due to not synchronized input).
             Input.Update();
@@ -188,6 +187,12 @@ namespace SpaceInvaders
             EnemyGroup.Update(deltaTime);
             ProjectileController.Update(deltaTime);
             UfoController.Update(deltaTime);
+
+            if (EnemyGroup.RemainingEnemyCount <= 0)
+            {
+                EnemyGroup.Spawn();
+                Player.Lives += 1;
+            }
         }
 
         private void UpdateGameoverText(float deltaTime)

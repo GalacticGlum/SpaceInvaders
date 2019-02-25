@@ -80,6 +80,11 @@ namespace SpaceInvaders
         public Vector2 StartingPosition { get; }
 
         /// <summary>
+        /// The number of enemies in this <see cref="EnemyGroup"/> that are not dead.
+        /// </summary>
+        public int RemainingEnemyCount { get; private set; }
+
+        /// <summary>
         /// The width of the enemy with the largest width, in pixels.
         /// </summary>
         private readonly int largestEnemyWidth;
@@ -112,6 +117,13 @@ namespace SpaceInvaders
         private readonly Enemy[,] enemyGrid;
 
         /// <summary>
+        /// The different enemy type layers.
+        /// The i-th element of this array indicates the <see cref="EnemyType"/>
+        /// for the i-th row in the <see cref="enemyGrid"/>.
+        /// </summary>
+        private readonly EnemyType[] enemyTypeLayers;
+
+        /// <summary>
         /// A list of (<see cref="Enemy"/>, <see cref="float"/>) tuples containing
         /// where the first value of the tuple indicates the <see cref="Enemy"/> that
         /// exploded and the second value indicates the time, in seconds, until the
@@ -119,11 +131,6 @@ namespace SpaceInvaders
         /// </summary>
         private readonly List<Tuple<Enemy, float>> activeExplosions;
 
-        /// <summary>
-        /// The number of enemies in this <see cref="EnemyGroup"/> that are not dead.
-        /// </summary>
-        private int remainingEnemyCount;
-        
         /// <summary>
         /// The bounding <see cref="RectangleF"/> of this <see cref="EnemyGroup"/>.
         /// </summary>
@@ -149,16 +156,8 @@ namespace SpaceInvaders
         public EnemyGroup()
         {
             activeExplosions = new List<Tuple<Enemy, float>>();
-
             enemyGrid = new Enemy[GroupWidth, GroupHeight];
-            EnemyType[] enemyTypeLayers = LoadEnemyTypeLayers();
-            for (int y = 0; y < GroupHeight; y++)
-            {
-                for (int x = 0; x < GroupWidth; x++)
-                {
-                    enemyGrid[x, y] = new Enemy(new Vector2(x, y), enemyTypeLayers[y]);
-                }
-            }
+            enemyTypeLayers = LoadEnemyTypeLayers();
 
             // We want the size of each grid cell to be the same so we need to find
             // the width of the largest texture; all other textures will be horizontally centered
@@ -171,14 +170,31 @@ namespace SpaceInvaders
             totalWidth = GroupWidth * groupCellWidth + (GroupWidth - 1) * Padding;
             totalHeight = groupCellHeight * groupCellHeight + (GroupHeight - 1) * Padding;
 
-            remainingEnemyCount = TotalGroupEnemies;
-
             float positionX = (MainGame.GameScreenWidth - totalWidth) * 0.5f;
             const float positionY = MainGame.GameScreenHeight * 0.25f;
             boundingRectangle = new RectangleF(positionX, positionY, totalWidth, totalHeight);
-
-            timeToMovement = GetMovementTime();
             StartingPosition = boundingRectangle.Position;
+
+            Spawn();
+        }
+
+        /// <summary>
+        /// Spawn this <see cref="EnemyGroup"/>.
+        /// </summary>
+        public void Spawn()
+        {
+            activeExplosions.Clear();
+            for (int y = 0; y < GroupHeight; y++)
+            {
+                for (int x = 0; x < GroupWidth; x++)
+                {
+                    enemyGrid[x, y] = new Enemy(new Vector2(x, y), enemyTypeLayers[y]);
+                }
+            }
+
+            boundingRectangle.Position = StartingPosition;
+            RemainingEnemyCount = TotalGroupEnemies;
+            timeToMovement = GetMovementTime();
 
             startupAnimationTimer = StartupAnimationTime;
             renderRowThreshold = GroupHeight - 1;
@@ -356,7 +372,7 @@ namespace SpaceInvaders
         /// </summary>
         private Enemy GetLeftMostEnemy()
         {
-            if (remainingEnemyCount == 0) return null;
+            if (RemainingEnemyCount == 0) return null;
 
             Enemy leftMostEnemy = null;
             float boundaryX = float.MaxValue;
@@ -383,7 +399,7 @@ namespace SpaceInvaders
         /// </summary>
         private Enemy GetRightMostEnemy()
         {
-            if (remainingEnemyCount == 0) return null;
+            if (RemainingEnemyCount == 0) return null;
 
             Enemy rightMostEnemy = null;
             float boundaryX = float.MinValue;
@@ -449,7 +465,7 @@ namespace SpaceInvaders
         {
             Enemy enemy = enemyGrid[x, y];
             enemy.Active = false;
-            remainingEnemyCount -= 1;
+            RemainingEnemyCount -= 1;
 
             activeExplosions.Add(new Tuple<Enemy, float>(enemy, ExplosionTime));
             MainGame.Context.Player.Score += enemy.Type.Points;
@@ -501,7 +517,7 @@ namespace SpaceInvaders
 
             // The value of h(x) = 1000 / ((T + 1 - x)^3)
             // where T is the total enemy count and x is the remaining enemy count.
-            float hx = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGroupEnemies + remainingEnemyCount + 1, 3));
+            float hx = 1000 * MathHelper.InverseSqrt((float)Math.Pow(TotalGroupEnemies + RemainingEnemyCount + 1, 3));
             
             // m(x) = 1 / 2.5(h(x) - 0.25)
             return 1 / (intensityCoefficient * (hx - 0.25f));
