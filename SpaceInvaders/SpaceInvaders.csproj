@@ -68,6 +68,7 @@
     <Compile Include="Logging\LoggerDestination.cs" />
     <Compile Include="Logging\LoggerVerbosity.cs" />
     <Compile Include="MainGame.cs" />
+    <Compile Include="MainMenuScreen.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Projectile.cs" />

@@ -91,6 +91,10 @@ namespace SpaceInvaders
         private Textbox nameInputTextbox;
         private TextButton nameInputConfirmButton;
 
+        /// <summary>
+        /// Load the content for this gameplay screen.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void LoadContent(SpriteBatch spriteBatch)
         {
             this.spriteBatch = spriteBatch;
@@ -111,6 +115,15 @@ namespace SpaceInvaders
             UfoController = new UfoController();
         }
 
+        public override void OnScreenSwitched()
+        {
+            MainGame.Context.IsMouseVisible = false;
+        }
+
+        /// <summary>
+        /// Update the gameplay screen.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -130,6 +143,10 @@ namespace SpaceInvaders
             UpdateGameoverUI(deltaTime);
         }
 
+        /// <summary>
+        /// Update the gameplay logic.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         private void UpdateGameplay(float deltaTime)
         {
             if (Input.GetKeyDown(Keys.Q))
@@ -142,13 +159,16 @@ namespace SpaceInvaders
             ProjectileController.Update(deltaTime);
             UfoController.Update(deltaTime);
 
-            if (EnemyGroup.RemainingEnemyCount <= 0)
-            {
-                EnemyGroup.Spawn();
-                Player.Lives += 1;
-            }
+            if (EnemyGroup.RemainingEnemyCount > 0) return;
+
+            EnemyGroup.Spawn();
+            Player.Lives += 1;
         }
 
+        /// <summary>
+        /// Update the gameover UI logic.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         private void UpdateGameoverUI(float deltaTime)
         {
             if (!isGameover) return;
@@ -167,6 +187,10 @@ namespace SpaceInvaders
             nameInputConfirmButton?.Update();
         }
 
+        /// <summary>
+        /// Render the gameplay screen.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.DrawLine(HorizontalBoundaryStart, HorizontalBoundaryEnd, ColourHelpers.PureGreen, 2);
@@ -282,6 +306,9 @@ namespace SpaceInvaders
 
         private void OnNameInputConfirmButtonClicked()
         {
+            // If no name has been entered, let's not proceed.
+            if (string.IsNullOrEmpty(nameInputTextbox.Text)) return;
+
             // Save the score to the highscores data file
             HighscoreScreen highscoreScreen = MainGame.Context.GetGameScreen<HighscoreScreen>(GameScreenType.Highscore);
             highscoreScreen.WriteHighscore(nameInputTextbox.Text, Player.Score);

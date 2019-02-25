@@ -43,6 +43,7 @@ namespace SpaceInvaders
         public override void OnScreenSwitched()
         {
             LoadHighscores();
+            MainGame.Context.IsMouseVisible = true;
         }
 
         private void LoadHighscores()
@@ -100,7 +101,7 @@ namespace SpaceInvaders
             spriteBatch.DrawString(spaceInvadersFont, "SCORE", new Vector2(scoreTextX, VerticalPadding), ColourHelpers.PureGreen);
 
             const int entryVerticalPadding = 5;
-            float entriesOffset = 30;
+            const float entriesOffset = 30;
             float entriesTotalHeight = 10 * spaceInvadersFont.LineSpacing + 9 * entryVerticalPadding + entriesOffset;
 
             if (highscoreData.Count <= 0)
@@ -140,8 +141,9 @@ namespace SpaceInvaders
             exitButton?.Draw(spriteBatch);
         }
 
-        private void OnExitButtonClicked()
+        private static void OnExitButtonClicked()
         {
+            MainGame.Context.SwitchScreen(GameScreenType.MainMenu);
         }
 
         private static void VerifyHighscoreDataFile()

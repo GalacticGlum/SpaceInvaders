@@ -56,10 +56,11 @@ namespace SpaceInvaders
             gameScreens = new Dictionary<GameScreenType, GameScreen>
             {
                 {GameScreenType.Gameplay, new GameplayScreen()},
-                {GameScreenType.Highscore, new HighscoreScreen()}
+                {GameScreenType.Highscore, new HighscoreScreen()},
+                {GameScreenType.MainMenu, new MainMenuScreen()}
             };
 
-            SwitchScreen(GameScreenType.Gameplay);
+            SwitchScreen(GameScreenType.MainMenu);
         }
 
         /// <summary>
@@ -131,6 +132,12 @@ namespace SpaceInvaders
         {
             activeGameScreenType = type;
             gameScreens[activeGameScreenType].OnScreenSwitched();
+        }
+
+        public void ReloadScreen<T>(GameScreenType type) where T : GameScreen
+        {
+            gameScreens[type] = (GameScreen)Activator.CreateInstance(typeof(T));
+            gameScreens[type].LoadContent(spriteBatch);
         }
 
         public T GetGameScreen<T>(GameScreenType type) where T : GameScreen  => (T)gameScreens[type];
