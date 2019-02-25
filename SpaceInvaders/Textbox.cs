@@ -99,7 +99,7 @@ namespace SpaceInvaders
             else
             {
                 if (Text.Length >= MaxCharacters) return;
-                if (char.IsLetterOrDigit(e.Character) || char.IsWhiteSpace(e.Character)) 
+                if (char.IsLetterOrDigit(e.Character) || e.Character == ' ') 
                 {
                     Text += e.Character;
                 }
