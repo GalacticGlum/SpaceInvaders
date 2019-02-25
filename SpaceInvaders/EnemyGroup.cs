@@ -62,6 +62,11 @@ namespace SpaceInvaders
         private const float ExplosionTime = 0.15f;
 
         /// <summary>
+        /// The amount of time, in seconds, that it takes for a new row to be drawn in the startup animation.
+        /// </summary>
+        private const float StartupAnimationTime = 0.20f;
+
+        /// <summary>
         /// Gets or sets the <see cref="Enemy"/> at the specified coordinate.
         /// </summary>
         /// <param name="x">The x-coordinate of the <see cref="Enemy"/> in this <see cref="EnemyGroup"/>.</param>
@@ -129,6 +134,15 @@ namespace SpaceInvaders
         private bool canVerticallyMove;
         private bool animationFrameToggle;
 
+        private bool isStartupAnimation;
+        private float startupAnimationTimer;
+
+        /// <summary>
+        /// All rows less than or equal to this threshold will be drawn.
+        /// This is used for the startup animation.
+        /// </summary>
+        private int renderRowThreshold;
+
         /// <summary>
         /// Initializes a new <see cref="EnemyGroup"/>.
         /// </summary>
@@ -165,6 +179,13 @@ namespace SpaceInvaders
 
             timeToMovement = GetMovementTime();
             StartingPosition = boundingRectangle.Position;
+
+            startupAnimationTimer = StartupAnimationTime;
+            renderRowThreshold = GroupHeight - 1;
+            isStartupAnimation = true;
+
+            // The game will remain frozen until the startup animation is done.
+            MainGame.Context.Freeze();
         }
 
         /// <summary>
@@ -191,6 +212,22 @@ namespace SpaceInvaders
         /// <param name="deltaTime">The elapsed time between this frame and the last frame, in seconds.</param>
         public void Update(float deltaTime)
         {
+            if (isStartupAnimation)
+            {
+                startupAnimationTimer -= deltaTime;
+                if (startupAnimationTimer <= 0)
+                {
+                    startupAnimationTimer = StartupAnimationTime;
+                    renderRowThreshold -= 1;
+                }
+
+                if (renderRowThreshold == 0)
+                {
+                    isStartupAnimation = false;
+                    MainGame.Context.Unfreeze();
+                }
+            }
+
             if (MainGame.Context.IsFrozen) return;
 
             timeToMovement -= deltaTime;
@@ -260,6 +297,7 @@ namespace SpaceInvaders
         {
             for (int y = 0; y < GroupHeight; y++)
             {
+                if (y < renderRowThreshold) continue;
                 for (int x = 0; x < GroupWidth; x++)
                 {
                     Enemy enemy = enemyGrid[x, y];

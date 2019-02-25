@@ -302,6 +302,14 @@ namespace SpaceInvaders
         }
 
         /// <summary>
+        /// Unfreezes the game.
+        /// </summary>
+        public void Unfreeze()
+        {
+            IsFrozen = false;
+        }
+
+        /// <summary>
         /// Triggers the gameover state.
         /// </summary>
         public void TriggerGameover()
