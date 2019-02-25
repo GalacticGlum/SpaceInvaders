@@ -10,8 +10,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
 using SpaceInvaders.Engine;
@@ -65,6 +68,11 @@ namespace SpaceInvaders
         /// The amount of time, in seconds, that it takes for a new row to be drawn in the startup animation.
         /// </summary>
         private const float StartupAnimationTime = 0.20f;
+        
+        /// <summary>
+        /// The amount of movement sound effects.
+        /// </summary>
+        private const int MovementSoundEffectCount = 4;
 
         /// <summary>
         /// Gets or sets the <see cref="Enemy"/> at the specified coordinate.
@@ -136,6 +144,9 @@ namespace SpaceInvaders
         /// </summary>
         private RectangleF boundingRectangle;
 
+        private readonly SoundEffectInstance[] movementSounds;
+        private int movementSoundCounter;
+
         private int movementDirection = 1;
         private float timeToMovement;
         private bool canVerticallyMove;
@@ -161,19 +172,28 @@ namespace SpaceInvaders
 
             // We want the size of each grid cell to be the same so we need to find
             // the width of the largest texture; all other textures will be horizontally centered
-            // in the grid cell according to the largest width. The height of all enemies is the same.
+            // in the grid cell according to the largest width. The same applies for height.
             largestEnemyWidth = EnemyType.All().Select(type => MainGame.Context.MainTextureAtlas[$"enemy_{type}_1"].Width).Max();
+            int largestEnemyHeight = EnemyType.All().Select(type => MainGame.Context.MainTextureAtlas[$"enemy_{type}_1"].Height).Max();
 
             groupCellWidth = largestEnemyWidth * MainGame.ResolutionScale;
-            groupCellHeight = MainGame.Context.MainTextureAtlas["enemy_Big_1"].Height * MainGame.ResolutionScale;
+            groupCellHeight = largestEnemyHeight * MainGame.ResolutionScale;
 
             totalWidth = GroupWidth * groupCellWidth + (GroupWidth - 1) * Padding;
-            totalHeight = groupCellHeight * groupCellHeight + (GroupHeight - 1) * Padding;
+            totalHeight = GroupHeight * groupCellHeight + (GroupHeight - 1) * Padding;
 
             float positionX = (MainGame.GameScreenWidth - totalWidth) * 0.5f;
             const float positionY = MainGame.GameScreenHeight * 0.25f;
             boundingRectangle = new RectangleF(positionX, positionY, totalWidth, totalHeight);
             StartingPosition = boundingRectangle.Position;
+
+            // Load the movement sound effects
+            movementSounds = new SoundEffectInstance[MovementSoundEffectCount];
+            for (int i = 1; i <= MovementSoundEffectCount; i++)
+            {
+                SoundEffect soundEffect = MainGame.Context.Content.Load<SoundEffect>($"Audio/fastinvader{i}");
+                movementSounds[i - 1] = soundEffect.CreateInstance();
+            }
 
             Spawn();
         }
@@ -264,6 +284,9 @@ namespace SpaceInvaders
 
                 timeToMovement = GetMovementTime();
                 animationFrameToggle = !animationFrameToggle;
+
+                movementSounds[movementSoundCounter].Play();
+                movementSoundCounter = (movementSoundCounter + 1) % movementSounds.Length;
             }
 
             for (int x = 0; x < GroupWidth; x++)
@@ -303,6 +326,12 @@ namespace SpaceInvaders
                 {
                     activeExplosions.RemoveAt(i);
                 }
+            }
+
+            Enemy bottomMost = GetBottomMostEnemy();
+            if (GetEnemyWorldRectangle(bottomMost).Bottom > gameplayScreen.BarrierGroup[0].Rectangle.Bottom)
+            {
+                gameplayScreen.TriggerGameover();
             }
         }
 
@@ -404,6 +433,33 @@ namespace SpaceInvaders
             }
 
             return rightMostEnemy;
+        }
+
+        /// <summary>
+        /// Gets the bottom-most active <see cref="Enemy"/> in this <see cref="EnemyGroup"/>.
+        /// </summary>
+        /// <returns></returns>
+        private Enemy GetBottomMostEnemy()
+        {
+            if (RemainingEnemyCount == 0) return null;
+
+            Enemy bottomMostEnemy = null;
+            float boundaryY = float.MinValue;
+            for (int y = GroupHeight - 1; y >= 0; y--)
+            {
+                for (int x = 0; x < GroupWidth; x++)
+                {
+                    Enemy enemy = enemyGrid[x, y];
+                    if (!enemy.Active) continue;
+
+                    RectangleF rectangle = GetEnemyWorldRectangle(enemy);
+                    if (rectangle.Bottom <= boundaryY) continue;
+                    boundaryY = rectangle.Bottom;
+                    bottomMostEnemy = enemy;
+                }
+            }
+
+            return bottomMostEnemy;
         }
 
         /// <summary>
