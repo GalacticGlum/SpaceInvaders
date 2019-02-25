@@ -48,6 +48,11 @@ namespace SpaceInvaders
         public int Lives { get; set; } = DefaultLives;
 
         /// <summary>
+        /// The position of this <see cref="Player"/>.
+        /// </summary>
+        public Vector2 Position => boundingRectangle.Position;
+
+        /// <summary>
         /// The texture of this <see cref="Player"/>.
         /// </summary>
         public Texture2D Texture { get; }

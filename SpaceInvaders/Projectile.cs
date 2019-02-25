@@ -107,7 +107,11 @@ namespace SpaceInvaders
                     break;
                 case ProjectileType.Enemy:
 
-                    if(MainGame.Context.Player.)
+                    if (MainGame.Context.Player.Intersects(rectangle))
+                    {
+                        MainGame.Context.Player.Lives -= 1;
+                        MainGame.Context.ProjectileController.Remove(this);
+                    }
 
                     break;
             }

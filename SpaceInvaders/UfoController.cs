@@ -93,7 +93,6 @@ namespace SpaceInvaders
 
                 // A 50% chance to spawn on the left side.
                 bool left = Random.Value() > 0.5f;
-                Console.WriteLine(left);
                 movementDirection = left ? 1 : -1;
                 isUfoActive = true;
 
@@ -101,7 +100,6 @@ namespace SpaceInvaders
                 float positionX = left ? -ufoWidth : MainGame.GameScreenWidth + ufoWidth;
                 BoundingRectangle.Position = new Vector2(positionX, positionY);
                 timeToSpawn = Random.Range(MinimumSpawnTime, MaximumSpawnTime);
-                Console.WriteLine(timeToSpawn);
             }
         }
 

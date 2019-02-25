@@ -175,20 +175,21 @@ namespace SpaceInvaders
                 ColourHelpers.PureGreen);
             
             Texture2D playerTexture = MainTextureAtlas["player"];
-            Texture2D playerOutlineTexture = MainTextureAtlas["player"];
+            Texture2D playerOutlineTexture = MainTextureAtlas["player_outline"];
 
-            Vector2 livesTextSize = hudSpriteFont.MeasureString("LIVES");
-            float playerTextureScale = livesTextSize.Y / playerTexture.Height;
-            float playerOutlineTextureScale = livesTextSize.Y / playerOutlineTexture.Height;
+            int playerTextureScale = hudSpriteFont.LineSpacing / playerTexture.Height;
+            int playerOutlineTextureScale = hudSpriteFont.LineSpacing / playerOutlineTexture.Height;
 
             float widthA = Player.Lives * playerTexture.Width * playerTextureScale;
             float widthB = (Player.MaxLives - Player.Lives) * playerOutlineTexture.Width * playerOutlineTextureScale;
             float livesWidth = widthA + widthB + (Player.MaxLives - 1) * hudElementPadding;
 
             float livesStartingPositionX = GameScreenWidth - HudPadding.X - livesWidth;
-            float textPositionX = livesStartingPositionX - hudElementPadding - livesTextSize.X;
 
+            Vector2 livesTextSize = hudSpriteFont.MeasureString("LIVES");
+            float textPositionX = livesStartingPositionX - hudElementPadding - livesTextSize.X;
             spriteBatch.DrawString(hudSpriteFont, "LIVES", new Vector2(textPositionX, HudPadding.Y), Color.White);
+
             for (int i = 0; i < Player.MaxLives; ++i)
             {
                 if(Player.Lives <= Player.DefaultLives && i > Player.DefaultLives - 1) continue;
@@ -197,7 +198,8 @@ namespace SpaceInvaders
                 float scale = i < Player.Lives ? playerTextureScale : playerOutlineTextureScale;
                 Vector2 position = new Vector2(livesStartingPositionX + i * (hudElementPadding + texture.Width * scale), HudPadding.Y);
 
-                spriteBatch.Draw(texture, position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, scale, SpriteEffects.None, 0.5f);
+                Color colour = i < Player.Lives ? ColourHelpers.PureGreen : Color.Red;
+                spriteBatch.Draw(texture, position, null, colour, 0, Vector2.Zero, scale, SpriteEffects.None, 0.5f);
             }
         }
 
