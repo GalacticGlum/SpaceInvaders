@@ -60,6 +60,10 @@
     <Compile Include="Engine\TextureAtlas.cs" />
     <Compile Include="Engine\TextureHelpers.cs" />
     <Compile Include="Engine\Input.cs" />
+    <Compile Include="GameplayScreen.cs" />
+    <Compile Include="GameScreenType.cs" />
+    <Compile Include="HighscoreScreen.cs" />
+    <Compile Include="GameScreen.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LoggerDestination.cs" />
     <Compile Include="Logging\LoggerVerbosity.cs" />

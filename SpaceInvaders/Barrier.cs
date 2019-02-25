@@ -77,10 +77,10 @@ namespace SpaceInvaders
             float totalWidth = tileWidth * barrierTileTexture.Width * MainGame.ResolutionScale;
             float totalHeight = tileHeight * barrierTileTexture.Height * MainGame.ResolutionScale;
 
-            float deltaX = (MainGame.HorizontalBoundaryStart.X + MainGame.HorizontalBoundaryEnd.X) / (BarrierGroup.SpawnBarrierCount + 1);
+            float deltaX = (GameplayScreen.HorizontalBoundaryStart.X + GameplayScreen.HorizontalBoundaryEnd.X) / (BarrierGroup.SpawnBarrierCount + 1);
             float xCorrection = totalWidth * 0.5f;
-            float spawnX = MainGame.HorizontalBoundaryStart.X + deltaX * (spawnIndex + 1) - xCorrection;
-            float spawnY =  MainGame.Context.Player.Position.Y - VerticalSpawnOffset * MainGame.ResolutionScale - totalHeight;
+            float spawnX = GameplayScreen.HorizontalBoundaryStart.X + deltaX * (spawnIndex + 1) - xCorrection;
+            float spawnY = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).Player.Position.Y - VerticalSpawnOffset * MainGame.ResolutionScale - totalHeight;
 
             Rectangle = new RectangleF(spawnX, spawnY, totalWidth, totalHeight);
         }

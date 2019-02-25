@@ -72,19 +72,21 @@ namespace SpaceInvaders
             rectangle.Position += Velocity * deltaTime;
             HandleAnimation(deltaTime);
 
+            GameplayScreen gameplayScreen = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay);
+
             // If the projectile exceeds the top or bottom vertical boundary, we need to destroy it.
-            if (rectangle.Top <= MainGame.TopVerticalBoundary || rectangle.Bottom > MainGame.HorizontalBoundaryY)
+            if (rectangle.Top <= GameplayScreen.TopVerticalBoundary || rectangle.Bottom > GameplayScreen.HorizontalBoundaryY)
             {
-                MainGame.Context.ProjectileController.Remove(this);
+                gameplayScreen.ProjectileController.Remove(this);
             }
 
             // Check whether the projectile hit any of the boundaries
             // If so, we need to decrement the health of the boundary and
             // destroy this projectile.
-            if (MainGame.Context.BarrierGroup.Intersects(rectangle, out BarrierHitResult barrierHitResult))
+            if (gameplayScreen.BarrierGroup.Intersects(rectangle, out BarrierHitResult barrierHitResult))
             {
                 barrierHitResult.Tile.Health -= 1;
-                MainGame.Context.ProjectileController.Remove(this);
+                gameplayScreen.ProjectileController.Remove(this);
             }
 
             // Only projectiles fired by a certain entity can collide with other entities.
@@ -92,25 +94,25 @@ namespace SpaceInvaders
             switch (Type)
             {
                 case ProjectileType.Player:
-                    if (MainGame.Context.EnemyGroup.Intersects(rectangle, out Point enemyHitResult))
+                    if (gameplayScreen.EnemyGroup.Intersects(rectangle, out Point enemyHitResult))
                     {
-                        MainGame.Context.EnemyGroup.RemoveEnemy(enemyHitResult.X, enemyHitResult.Y);
-                        MainGame.Context.ProjectileController.Remove(this);
+                        gameplayScreen.EnemyGroup.RemoveEnemy(enemyHitResult.X, enemyHitResult.Y);
+                        gameplayScreen.ProjectileController.Remove(this);
                     }
 
-                    if (MainGame.Context.UfoController.Intersects(rectangle))
+                    if (gameplayScreen.UfoController.Intersects(rectangle))
                     {
-                        MainGame.Context.UfoController.Destroy();
-                        MainGame.Context.ProjectileController.Remove(this);
+                        gameplayScreen.UfoController.Destroy();
+                        gameplayScreen.ProjectileController.Remove(this);
                     }
 
                     break;
                 case ProjectileType.Enemy:
 
-                    if (MainGame.Context.Player.Intersects(rectangle))
+                    if (gameplayScreen.Player.Intersects(rectangle))
                     {
-                        MainGame.Context.Player.Lives -= 1;
-                        MainGame.Context.ProjectileController.Remove(this);
+                        gameplayScreen.Player.Lives -= 1;
+                        gameplayScreen.ProjectileController.Remove(this);
                     }
 
                     break;

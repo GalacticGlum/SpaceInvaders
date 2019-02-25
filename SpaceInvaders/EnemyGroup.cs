@@ -201,7 +201,7 @@ namespace SpaceInvaders
             isStartupAnimation = true;
 
             // The game will remain frozen until the startup animation is done.
-            MainGame.Context.Freeze();
+            MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).Freeze();
         }
 
         /// <summary>
@@ -228,6 +228,7 @@ namespace SpaceInvaders
         /// <param name="deltaTime">The elapsed time between this frame and the last frame, in seconds.</param>
         public void Update(float deltaTime)
         {
+            GameplayScreen gameplayScreen = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay);
             if (isStartupAnimation)
             {
                 startupAnimationTimer -= deltaTime;
@@ -240,11 +241,11 @@ namespace SpaceInvaders
                 if (renderRowThreshold == 0)
                 {
                     isStartupAnimation = false;
-                    MainGame.Context.Unfreeze();
+                    gameplayScreen.Unfreeze();
                 }
             }
 
-            if (MainGame.Context.IsFrozen) return;
+            if (gameplayScreen.IsFrozen) return;
 
             timeToMovement -= deltaTime;
             if (timeToMovement <= 0)
@@ -287,7 +288,7 @@ namespace SpaceInvaders
                         return;
                     }
 
-                    MainGame.Context.ProjectileController.CreateEnemyProjectile(enemy);
+                    gameplayScreen.ProjectileController.CreateEnemyProjectile(enemy);
 
                     // Since we have the bottom-most enemy that active, we are done looking
                     // at the current column.
@@ -344,8 +345,8 @@ namespace SpaceInvaders
 
             if (leftMost != null && rightMost != null)
             {
-                return GetEnemyWorldRectangle(leftMost).Left <= MainGame.HorizontalBoundaryStart.X ||
-                       GetEnemyWorldRectangle(rightMost).Right >= MainGame.HorizontalBoundaryEnd.X;
+                return GetEnemyWorldRectangle(leftMost).Left <= GameplayScreen.HorizontalBoundaryStart.X ||
+                       GetEnemyWorldRectangle(rightMost).Right >= GameplayScreen.HorizontalBoundaryEnd.X;
             }
 
             return false;
@@ -452,7 +453,7 @@ namespace SpaceInvaders
             RemainingEnemyCount -= 1;
 
             activeExplosions.Add(new Tuple<Enemy, float>(enemy, ExplosionTime));
-            MainGame.Context.Player.Score += enemy.Type.Points;
+            MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).Player.Score += enemy.Type.Points;
         }
 
         /// <summary>
@@ -532,7 +533,7 @@ namespace SpaceInvaders
             // The final minimum time until an enemy attacks, in seconds; the value of f(d).
             const float finalMinimumTime = 1;
 
-            float validVerticalDistance = 1 / (MainGame.Context.BarrierGroup[0].Rectangle.Top - StartingPosition.Y);
+            float validVerticalDistance = 1 / (MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).BarrierGroup[0].Rectangle.Top - StartingPosition.Y);
             float b1 = (float) Math.Pow(initialMinimumTime / initialMaximumTime, validVerticalDistance);
             float b2 = (float) Math.Pow(finalMinimumTime / finalMaximumTime, validVerticalDistance);
 

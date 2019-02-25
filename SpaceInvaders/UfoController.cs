@@ -68,7 +68,7 @@ namespace SpaceInvaders
 
         public void Update(float deltaTime)
         {
-            if (MainGame.Context.IsFrozen) return;
+            if (MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).IsFrozen) return;
 
             float ufoWidth = ufoTexture.Width * MainGame.ResolutionScale;
             if (flashScore)
@@ -98,7 +98,7 @@ namespace SpaceInvaders
                 movementDirection = left ? 1 : -1;
                 isUfoActive = true;
 
-                float positionY = MainGame.TopVerticalBoundary + ufoTexture.Height * MainGame.ResolutionScale + VerticalSpawnPadding;
+                float positionY = GameplayScreen.TopVerticalBoundary + ufoTexture.Height * MainGame.ResolutionScale + VerticalSpawnPadding;
                 float positionX = left ? -ufoWidth : MainGame.GameScreenWidth + ufoWidth;
                 BoundingRectangle.Position = new Vector2(positionX, positionY);
                 timeToSpawn = Random.Range(MinimumSpawnTime, MaximumSpawnTime);
@@ -147,7 +147,7 @@ namespace SpaceInvaders
             scoreFlashCounter = 0;
             flashScoreTimer = ScoreFlashBreakTime;
 
-            MainGame.Context.Player.Score += points;
+            MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).Player.Score += points;
         }
 
         public bool Intersects(RectangleF rectangle) => isUfoActive && BoundingRectangle.Intersects(rectangle);

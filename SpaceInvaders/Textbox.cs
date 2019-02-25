@@ -18,7 +18,7 @@ namespace SpaceInvaders
     public class Textbox
     {
         private const string Caret = "_";
-        private const float CaretFlashTime = 0.20f;
+        private const float CaretFlashTime = 0.50f;
 
         public int MaxCharacters { get; set; }
         public SpriteFont Font { get; set; }

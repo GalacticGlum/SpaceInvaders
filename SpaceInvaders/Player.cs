@@ -25,7 +25,7 @@ namespace SpaceInvaders
         /// <summary>
         /// The amount of lives that a <see cref="Player"/> starts with.
         /// </summary>
-        public const int DefaultLives = 1;
+        public const int DefaultLives = 3;
 
         /// <summary>
         /// The maximum amount of lives that a <see cref="Player"/> can have.
@@ -65,13 +65,15 @@ namespace SpaceInvaders
                 lives = MathHelper.Clamp(value, 0, MaxLives);
 
                 if (oldLives <= lives) return;
+
+                GameplayScreen gameplayScreen = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay);
                 if (lives > 0)
                 {
-                    MainGame.Context.Freeze(DeathAnimationDuration);
+                    gameplayScreen.Freeze(DeathAnimationDuration);
                 }
                 else
                 {
-                    MainGame.Context.TriggerGameover();
+                    gameplayScreen.TriggerGameover();
                 }
 
                 isDeathAnimation = true;
@@ -120,12 +122,12 @@ namespace SpaceInvaders
         {
             Texture = MainGame.Context.MainTextureAtlas["player"];
 
-            float positionY = MainGame.HorizontalBoundaryY - Texture.Height * MainGame.ResolutionScale - VerticalSpawnOffset;
+            float positionY = GameplayScreen.HorizontalBoundaryY - Texture.Height * MainGame.ResolutionScale - VerticalSpawnOffset;
             startingPosition = new Vector2(0, positionY);
             boundingRectangle = new RectangleF(startingPosition.X, startingPosition.Y,
                 Texture.Width * MainGame.ResolutionScale, Texture.Height * MainGame.ResolutionScale);
 
-            maxHorizontalCoordinate = MainGame.HorizontalBoundaryEnd.X - Texture.Width * MainGame.ResolutionScale;
+            maxHorizontalCoordinate = GameplayScreen.HorizontalBoundaryEnd.X - Texture.Width * MainGame.ResolutionScale;
         }
 
         /// <summary>
@@ -140,7 +142,7 @@ namespace SpaceInvaders
         public void InitializeHorizontalPosition()
         {
             float centeringOffset = Texture.Width * MainGame.ResolutionScale * 0.5f;
-            float positionX = MainGame.Context.BarrierGroup[0].Rectangle.Centre.X - centeringOffset;
+            float positionX = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).BarrierGroup[0].Rectangle.Centre.X - centeringOffset;
             startingPosition.X = positionX;
             boundingRectangle.X = positionX;
         }
@@ -167,11 +169,12 @@ namespace SpaceInvaders
                 }
             }
 
-            if (MainGame.Context.IsFrozen) return;
+            GameplayScreen gameplayScreen = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay);
+            if (gameplayScreen.IsFrozen) return;
             HandleMovement(deltaTime);
             if (Input.GetKey(Keys.Space))
             {
-                MainGame.Context.ProjectileController.CreatePlayerProjectile();
+                gameplayScreen.ProjectileController.CreatePlayerProjectile();
             }
         }
 
@@ -188,7 +191,7 @@ namespace SpaceInvaders
                 velocity = 1;
             }
 
-            float newX = MathHelper.Clamp(boundingRectangle.X + velocity * HorizontalSpeed * deltaTime, MainGame.HorizontalBoundaryStart.X, maxHorizontalCoordinate);
+            float newX = MathHelper.Clamp(boundingRectangle.X + velocity * HorizontalSpeed * deltaTime, GameplayScreen.HorizontalBoundaryStart.X, maxHorizontalCoordinate);
             boundingRectangle.X = newX;
         }
 

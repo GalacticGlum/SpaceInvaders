@@ -79,6 +79,8 @@ namespace SpaceInvaders
         /// </summary>
         public void CreatePlayerProjectile()
         {
+            GameplayScreen gameplayScreen = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay);
+
             // There already exists a player projectile in the world.
             // A player can only fire a projectile after the previous one
             // has been destroyed.
@@ -87,8 +89,8 @@ namespace SpaceInvaders
             // The projectile should spawn at the top-centre of the player.
             // The position of the player is the top-left so we just need to
             // horizontally offset it by half of the player width.
-            Vector2 offset = new Vector2(MainGame.Context.Player.Texture.Width * MainGame.ResolutionScale * 0.5f, 0);
-            Vector2 position = MainGame.Context.Player.Position + offset;
+            Vector2 offset = new Vector2(gameplayScreen.Player.Texture.Width * MainGame.ResolutionScale * 0.5f, 0);
+            Vector2 position = gameplayScreen.Player.Position + offset;
 
             // Get a random player projectile
             CreateProjectile(position, GetRandomProjectilePrototype(ProjectileType.Player));
@@ -96,7 +98,7 @@ namespace SpaceInvaders
 
         public void CreateEnemyProjectile(Enemy enemy)
         {
-            RectangleF enemyRectangle = MainGame.Context.EnemyGroup.GetEnemyWorldRectangle(enemy);
+            RectangleF enemyRectangle = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).EnemyGroup.GetEnemyWorldRectangle(enemy);
             Vector2 position = enemyRectangle.Position + new Vector2(enemyRectangle.Width / 2, 0);
 
             CreateProjectile(position, GetRandomProjectilePrototype(ProjectileType.Enemy));
@@ -114,7 +116,7 @@ namespace SpaceInvaders
 
         public void Update(float deltaTime)
         {
-            if (MainGame.Context.IsFrozen) return;
+            if (MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).IsFrozen) return;
             ApplyOperationOnProjectiles(projectile => projectile.Update(deltaTime));
             CollectProjectiles();
         }
