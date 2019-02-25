@@ -114,6 +114,7 @@ namespace SpaceInvaders
 
         public void Update(float deltaTime)
         {
+            if (MainGame.Context.IsFrozen) return;
             ApplyOperationOnProjectiles(projectile => projectile.Update(deltaTime));
             CollectProjectiles();
         }

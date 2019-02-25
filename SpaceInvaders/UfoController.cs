@@ -68,6 +68,8 @@ namespace SpaceInvaders
 
         public void Update(float deltaTime)
         {
+            if (MainGame.Context.IsFrozen) return;
+
             float ufoWidth = ufoTexture.Width * MainGame.ResolutionScale;
             if (flashScore)
             {

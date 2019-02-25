@@ -191,6 +191,8 @@ namespace SpaceInvaders
         /// <param name="deltaTime">The elapsed time between this frame and the last frame, in seconds.</param>
         public void Update(float deltaTime)
         {
+            if (MainGame.Context.IsFrozen) return;
+
             timeToMovement -= deltaTime;
             if (timeToMovement <= 0)
             {

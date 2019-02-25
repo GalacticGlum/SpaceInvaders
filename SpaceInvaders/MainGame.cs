@@ -65,6 +65,8 @@ namespace SpaceInvaders
         /// </summary>
         public static MainGame Context { get; private set; }
 
+        public bool IsFrozen { get; private set; }
+
         /// <summary>
         /// The main texture atlas containing the player, enemy, and combat sprites.
         /// </summary>
@@ -79,6 +81,8 @@ namespace SpaceInvaders
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private SpriteFont hudSpriteFont;
+
+        private float freezeTimer;
 
         public MainGame()
         {
@@ -132,7 +136,24 @@ namespace SpaceInvaders
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            float deltaTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            // Update the freeze timer if it has a non-negative duration.
+            // A non-negative duration indicates an indefinite freeze.
+            if (IsFrozen && freezeTimer > 0)
+            {
+                freezeTimer -= deltaTime;
+                if (freezeTimer <= 0)
+                {
+                    IsFrozen = false;
+                }
+            }
+
+            UpdateGameplay(deltaTime);
+        }
+
+        private void UpdateGameplay(float deltaTime)
+        {
 
             // We NEED to update input before we execute game logic
             // so that the gameplay does not lag by a frame (due to not synchronized input).
@@ -171,8 +192,9 @@ namespace SpaceInvaders
             const int hudElementPadding = 10;
 
             spriteBatch.DrawString(hudSpriteFont, "SCORE", HudPadding, Color.White);
-            spriteBatch.DrawString(hudSpriteFont, Player.Score.ToString(), new Vector2(hudSpriteFont.MeasureString("SCORE").X + hudElementPadding, 0) + HudPadding, 
-                ColourHelpers.PureGreen);
+
+            Vector2 scoreTextPosition = new Vector2(hudSpriteFont.MeasureString("SCORE").X + hudElementPadding, 0) + HudPadding;
+            spriteBatch.DrawString(hudSpriteFont, Player.Score.ToString(), scoreTextPosition, ColourHelpers.PureGreen);
             
             Texture2D playerTexture = MainTextureAtlas["player"];
             Texture2D playerOutlineTexture = MainTextureAtlas["player_outline"];
@@ -201,6 +223,18 @@ namespace SpaceInvaders
                 Color colour = i < Player.Lives ? ColourHelpers.PureGreen : Color.Red;
                 spriteBatch.Draw(texture, position, null, colour, 0, Vector2.Zero, scale, SpriteEffects.None, 0.5f);
             }
+        }
+
+        /// <summary>
+        /// Freezes the game for a specified amount of seconds.
+        /// </summary>
+        /// <param name="time">The amount of seconds to freeze the game for.
+        /// A negative value indicates an indefinite freeze.
+        /// </param>
+        public void Freeze(float time = -1)
+        {
+            freezeTimer = time;
+            IsFrozen = true;
         }
 
         protected override void OnExiting(object sender, EventArgs args)
