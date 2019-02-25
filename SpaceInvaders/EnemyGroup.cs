@@ -325,22 +325,6 @@ namespace SpaceInvaders
                 }
             }
 
-            for (int x = 0; x < GroupWidth; x++)
-            {
-                for (int y = GroupHeight - 1; y >= 0; y--)
-                {
-                    // Only bottom-most enemies in their respective columns can attack
-                    if (!enemyGrid[x,y].Active || y < GroupHeight - 1 && enemyGrid[x, y + 1].Active) continue;
-
-                    RectangleF worldRectangle = GetEnemyWorldRectangle(enemyGrid[x,y]);
-                    spriteBatch.DrawBorder(worldRectangle, Color.Green, 3, 1);
-
-                    // Since we have the bottom-most enemy that active, we are done looking
-                    // at the current column.
-                    break;
-                }
-            }
-
             foreach (Tuple<Enemy, float> explosion in activeExplosions)
             {
                 RectangleF worldRectangle = GetEnemyWorldRectangle(explosion.Item1);
