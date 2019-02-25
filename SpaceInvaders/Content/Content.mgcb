@@ -136,3 +136,9 @@
 /processorParam:Quality=Best
 /build:Audio/ufo_lowpitch.wav
 
+#begin Audio/kalinka.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/kalinka.mp3
+

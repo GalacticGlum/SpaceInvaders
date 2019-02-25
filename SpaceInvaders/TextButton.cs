@@ -92,9 +92,11 @@ namespace SpaceInvaders
         /// Render this <see cref="TextButton"/>.
         /// </summary>
         /// <param name="spriteBatch"></param>
-        public void Draw(SpriteBatch spriteBatch)
+        /// <param name="layerDepth"></param>
+        public void Draw(SpriteBatch spriteBatch, float layerDepth = 0)
         {
-            spriteBatch.DrawString(Font, Text, Rectangle.Position, currentColour);
+            spriteBatch.DrawString(Font, Text, Rectangle.Position, currentColour, 0, Vector2.Zero, Vector2.One,
+                SpriteEffects.None, layerDepth);
         }
     }
 }

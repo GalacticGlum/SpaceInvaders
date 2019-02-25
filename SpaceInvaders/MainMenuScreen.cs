@@ -9,6 +9,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using SpaceInvaders.Engine;
 
 namespace SpaceInvaders
@@ -22,6 +23,7 @@ namespace SpaceInvaders
         private SpriteBatch spriteBatch;
         private SpriteFont spaceInvadersFont;
         private Texture2D logoTexture;
+        private Song mainMenuSong;
 
         private TextButton gameplayButton;
         private TextButton highscoreButton;
@@ -43,6 +45,11 @@ namespace SpaceInvaders
             this.spriteBatch = spriteBatch;
             spaceInvadersFont = MainGame.Context.Content.Load<SpriteFont>("SpaceInvadersFont");
             logoTexture = MainGame.Context.Content.Load<Texture2D>("logo");
+            mainMenuSong = MainGame.Context.Content.Load<Song>("Audio/kalinka");
+
+            MediaPlayer.Play(mainMenuSong);
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = MainGame.Volume;
         }
 
         /// <summary>
@@ -61,6 +68,7 @@ namespace SpaceInvaders
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
+            const int buttonVerticalPadding = 20;
             if (gameplayButton == null && highscoreButton == null)
             {
                 gameplayButton = new TextButton(Vector2.Zero, spaceInvadersFont, "PLAY")
@@ -73,7 +81,6 @@ namespace SpaceInvaders
                     HoverColour = ColourHelpers.PureGreen
                 };
 
-                const int buttonVerticalPadding = 20;
                 gameplayButton.Rectangle.Position = new Vector2((MainGame.GameScreenWidth - gameplayButton.Rectangle.Width) * 0.5f,
                     (MainGame.GameScreenHeight - gameplayButton.Rectangle.Height) * 0.5f - buttonVerticalPadding);
 
@@ -82,13 +89,14 @@ namespace SpaceInvaders
 
                 gameplayButton.Clicked += OnGameplayButtonClicked;
                 highscoreButton.Clicked += OnHighscoreButtonClicked;
+                return;
             }
 
             float logoPositionX = (MainGame.GameScreenWidth - logoTexture.Width) * 0.5f;
             spriteBatch.Draw(logoTexture, new Vector2(logoPositionX, logoTexture.Height * 0.25f), Color.White);
-
-            gameplayButton?.Draw(spriteBatch);
-            highscoreButton?.Draw(spriteBatch);
+            
+            gameplayButton?.Draw(spriteBatch, 0.1f);
+            highscoreButton?.Draw(spriteBatch, 0.1f);
         }
 
         /// <summary>
