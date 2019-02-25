@@ -25,7 +25,7 @@ namespace SpaceInvaders
         /// <summary>
         /// The amount of lives that a <see cref="Player"/> starts with.
         /// </summary>
-        public const int DefaultLives = 3;
+        public const int DefaultLives = 1;
 
         /// <summary>
         /// The maximum amount of lives that a <see cref="Player"/> can have.

@@ -3,7 +3,7 @@
  * File Name: RectangleF.cs
  * Project Name: SpaceInvaders
  * Creation Date: 02/10/2019
- * Modified Date: 02/10/2019
+ * Modified Date: 02/24/2019
  * Description: An axis-aligned, four sided, two dimensional box defined by a
  *              top-left position and a size supporting floating point precision.
  */
@@ -176,6 +176,41 @@ namespace SpaceInvaders.Engine
         /// Value <c>true</c> if they do intersect; otherwise, <c>false</c>.
         /// </returns>
         public bool Intersects(RectangleF other) => Intersects(ref this, ref other);
+
+        /// <summary>
+        /// Determines whether the specified <see cref="RectangleF" /> contains the specified <see cref="Vector2" />.
+        /// </summary>
+        /// <param name="rectangle">The rectangle.</param>
+        /// <param name="point">The point.</param>
+        /// <returns>
+        /// A boolean value indicating whether the <see cref="RectangleF"/> contains the point.
+        /// Value <c>true</c> if it does; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool Contains(ref RectangleF rectangle, ref Vector2 point) => 
+            rectangle.X <= point.X && point.X < rectangle.X + rectangle.Width &&
+            rectangle.Y <= point.Y && point.Y < rectangle.Y + rectangle.Height;
+
+        /// <summary>
+        /// Determines whether the specified <see cref="RectangleF" /> contains the specified <see cref="Vector2" />.
+        /// </summary>
+        /// <param name="rectangle">The rectangle.</param>
+        /// <param name="point">The point.</param>
+        /// <returns>
+        /// A boolean value indicating whether the <see cref="RectangleF"/> contains the point.
+        /// Value <c>true</c> if it does; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool Contains(RectangleF rectangle, Vector2 point) =>
+            Contains(ref rectangle, ref point);
+
+        /// <summary>
+        /// Determines whether this <see cref="RectangleF" /> contains the specified <see cref="Vector2"/>.
+        /// </summary>
+        /// <param name="point">The point.</param>
+        /// <returns>
+        /// A boolean value indicating whether this <see cref="RectangleF"/> contains the point.
+        /// Value <c>true</c> if it does; otherwise, <c>false</c>.
+        /// </returns>
+        public bool Contains(Vector2 point) => Contains(ref this, ref point);
 
         /// <summary>
         /// Determines whether the two specified <see cref="RectangleF"/> are equal.

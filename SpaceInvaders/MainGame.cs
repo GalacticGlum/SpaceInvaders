@@ -11,6 +11,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using SpaceInvaders.Engine;
 using SpaceInvaders.Logging;
 
@@ -57,6 +58,8 @@ namespace SpaceInvaders
         private const float GameoverTextAnimationTypeTime = 0.1f;
         private const string HudLivesText = "LIVES";
         private const string HudScoreText = "SCORE";
+        private const string NamePromptText = "ENTER YOUR NAME:";
+        private const int UIElementPadding = 10;
 
         /// <summary>
         /// The starting point of the horizontal boundary line.
@@ -104,6 +107,9 @@ namespace SpaceInvaders
         private bool isGameover;
         private float gameoverTextTypeTimer = GameoverTextAnimationTypeTime;
         private int gameoverTextCharacterCount;
+
+        private Textbox nameInputTextbox;
+        private TextButton nameInputConfirmButton;
 
         public MainGame()
         {
@@ -176,7 +182,7 @@ namespace SpaceInvaders
             }
 
             UpdateGameplay(deltaTime);
-            UpdateGameoverText(deltaTime);
+            UpdateGameoverUI(deltaTime);
         }
 
         private void UpdateGameplay(float deltaTime)
@@ -184,6 +190,11 @@ namespace SpaceInvaders
             // We NEED to update input before we execute game logic
             // so that the gameplay does not lag by a frame (due to not synchronized input).
             Input.Update();
+
+            if (Input.GetKeyDown(Keys.Q))
+            {
+                Player.Lives -= 1;
+            }
 
             Player.Update(deltaTime);
             EnemyGroup.Update(deltaTime);
@@ -197,7 +208,7 @@ namespace SpaceInvaders
             }
         }
 
-        private void UpdateGameoverText(float deltaTime)
+        private void UpdateGameoverUI(float deltaTime)
         {
             if (!isGameover) return;
 
@@ -210,6 +221,9 @@ namespace SpaceInvaders
                     gameoverTextCharacterCount += 1;
                 }
             }
+
+            nameInputTextbox?.Update(deltaTime);
+            nameInputConfirmButton?.Update();
         }
 
         /// <summary>
@@ -244,11 +258,9 @@ namespace SpaceInvaders
         /// </summary>
         private void DrawUI()
         {
-            const int hudElementPadding = 10;
-
             spriteBatch.DrawString(hudSpriteFont, HudScoreText, HudPadding, Color.White);
 
-            Vector2 scoreTextPosition = new Vector2(hudSpriteFont.MeasureString(HudScoreText).X + hudElementPadding, 0) + HudPadding;
+            Vector2 scoreTextPosition = new Vector2(hudSpriteFont.MeasureString(HudScoreText).X + UIElementPadding, 0) + HudPadding;
             spriteBatch.DrawString(hudSpriteFont, Player.Score.ToString(), scoreTextPosition, ColourHelpers.PureGreen);
             
             Texture2D playerTexture = MainTextureAtlas["player"];
@@ -259,12 +271,12 @@ namespace SpaceInvaders
 
             float widthA = Player.Lives * playerTexture.Width * playerTextureScale;
             float widthB = (Player.MaxLives - Player.Lives) * playerOutlineTexture.Width * playerOutlineTextureScale;
-            float livesWidth = widthA + widthB + (Player.MaxLives - 1) * hudElementPadding;
+            float livesWidth = widthA + widthB + (Player.MaxLives - 1) * UIElementPadding;
 
             float livesStartingPositionX = GameScreenWidth - HudPadding.X - livesWidth;
 
             Vector2 livesTextSize = hudSpriteFont.MeasureString(HudLivesText);
-            float textPositionX = livesStartingPositionX - hudElementPadding - livesTextSize.X;
+            float textPositionX = livesStartingPositionX - UIElementPadding - livesTextSize.X;
             spriteBatch.DrawString(hudSpriteFont, HudLivesText, new Vector2(textPositionX, HudPadding.Y), Color.White);
 
             for (int i = 0; i < Player.MaxLives; ++i)
@@ -273,7 +285,7 @@ namespace SpaceInvaders
 
                 Texture2D texture = i < Player.Lives ? playerTexture : playerOutlineTexture;
                 float scale = i < Player.Lives ? playerTextureScale : playerOutlineTextureScale;
-                Vector2 position = new Vector2(livesStartingPositionX + i * (hudElementPadding + texture.Width * scale), HudPadding.Y);
+                Vector2 position = new Vector2(livesStartingPositionX + i * (UIElementPadding + texture.Width * scale), HudPadding.Y);
 
                 Color colour = i < Player.Lives ? ColourHelpers.PureGreen : Color.Red;
                 spriteBatch.Draw(texture, position, null, colour, 0, Vector2.Zero, scale, SpriteEffects.None, 0.5f);
@@ -287,13 +299,51 @@ namespace SpaceInvaders
         {
             if (!isGameover) return;
 
+            float headerTextPositionX = (GameScreenWidth - headerSpriteFont.MeasureString(GameoverHeaderText).X) * 0.5f;
+            float headerTextPositionY = (GameScreenHeight - headerSpriteFont.LineSpacing) * 0.5f - 50;
+
             if (gameoverTextCharacterCount > 0)
             {
-                float textPositionX = (GameScreenWidth - headerSpriteFont.MeasureString(GameoverHeaderText).X) * 0.5f;
-                float textPositionY = (GameScreenHeight - headerSpriteFont.LineSpacing) * 0.5f;
                 string text = GameoverHeaderText.Substring(0, gameoverTextCharacterCount);
-                spriteBatch.DrawString(headerSpriteFont, text, new Vector2(textPositionX, textPositionY), Color.White);
+                spriteBatch.DrawString(headerSpriteFont, text, new Vector2(headerTextPositionX, headerTextPositionY), Color.White);
             }
+
+            float namePromptPositionX = (GameScreenWidth - hudSpriteFont.MeasureString(NamePromptText).X) * 0.5f;
+            float namePromptPositionY = headerTextPositionY + headerSpriteFont.LineSpacing + UIElementPadding;
+            spriteBatch.DrawString(hudSpriteFont, NamePromptText, new Vector2(namePromptPositionX, namePromptPositionY), Color.White);
+
+            if (gameoverTextCharacterCount == GameoverHeaderText.Length)
+            {
+                if (nameInputTextbox == null)
+                {
+                    nameInputTextbox = new Textbox(Vector2.Zero, hudSpriteFont)
+                    {
+                        Colour = ColourHelpers.PureGreen,
+                        Focused = true
+                    };
+
+                    float textboxX = (GameScreenWidth - nameInputTextbox.Rectangle.Width) * 0.5f;
+                    float textboxY = namePromptPositionY + hudSpriteFont.LineSpacing + UIElementPadding;
+
+                    nameInputTextbox.Rectangle.Position = new Vector2(textboxX, textboxY);
+                }
+
+                if (nameInputConfirmButton == null)
+                {
+                    nameInputConfirmButton = new TextButton(Vector2.Zero, hudSpriteFont, "OK")
+                    {
+                        HoverColour = ColourHelpers.PureGreen
+                    };
+
+                    float buttonX = (GameScreenWidth - nameInputConfirmButton.Rectangle.Width) * 0.5f;
+                    float buttonY = nameInputTextbox.Rectangle.Y + hudSpriteFont.LineSpacing + UIElementPadding;
+
+                    nameInputConfirmButton.Rectangle.Position = new Vector2(buttonX, buttonY);
+                }
+            }
+
+            nameInputTextbox?.Draw(spriteBatch);
+            nameInputConfirmButton?.Draw(spriteBatch);
         }
 
         /// <summary>
@@ -322,7 +372,9 @@ namespace SpaceInvaders
         public void TriggerGameover()
         {
             Freeze();
+
             isGameover = true;
+            IsMouseVisible = true;
         }
 
         protected override void OnExiting(object sender, EventArgs args)
