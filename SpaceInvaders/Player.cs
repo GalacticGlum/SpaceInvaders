@@ -61,7 +61,7 @@ namespace SpaceInvaders
             set
             {
                 if (value == lives) return;
-                lives = value;
+                lives = MathHelper.Clamp(lives, 0, MaxLives);
 
                 if (lives > 0)
                 {
