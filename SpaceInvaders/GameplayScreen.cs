@@ -46,9 +46,25 @@ namespace SpaceInvaders
         /// to "type" in the gameover header.
         /// </summary>
         private const float GameoverTextAnimationTypeTime = 0.1f;
+
+        /// <summary>
+        /// The lives label text.
+        /// </summary>
         private const string HudLivesText = "LIVES";
+
+        /// <summary>
+        /// The score label text.
+        /// </summary>
         private const string HudScoreText = "SCORE";
+
+        /// <summary>
+        /// The text for the name prompt after the game is over.
+        /// </summary>
         private const string NamePromptText = "ENTER YOUR NAME:";
+
+        /// <summary>
+        /// The vertical padding, in pixels, for a UI element.
+        /// </summary>
         private const int UIElementPadding = 10;
 
         /// <summary>
@@ -115,6 +131,9 @@ namespace SpaceInvaders
             UfoController = new UfoController();
         }
 
+        /// <summary>
+        /// Called when the screen switches to this screen.
+        /// </summary>
         public override void OnScreenSwitched()
         {
             MainGame.Context.IsMouseVisible = false;

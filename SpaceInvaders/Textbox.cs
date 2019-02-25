@@ -4,10 +4,9 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/24/19
  * Modified Date: 02/24/19
- * Description: DESCRIPTION
+ * Description: A textbox UI element that allows for basic text input.
  */
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,22 +14,61 @@ using SpaceInvaders.Engine;
 
 namespace SpaceInvaders
 {
+    /// <summary>
+    /// A textbox UI element that allows for basic text input.
+    /// </summary>
     public class Textbox
     {
+        /// <summary>
+        /// The caret symbol.
+        /// </summary>
         private const string Caret = "_";
+
+        /// <summary>
+        /// The amount of time, in seconds, the caret symbol flashes for.
+        /// </summary>
         private const float CaretFlashTime = 0.50f;
 
+        /// <summary>
+        /// The max amount of characters that are allowed in this <see cref="Textbox"/>.
+        /// </summary>
         public int MaxCharacters { get; set; }
+
+        /// <summary>
+        /// The <see cref="SpriteFont"/> to render this <see cref="Textbox"/>.
+        /// </summary>
         public SpriteFont Font { get; set; }
+
+        /// <summary>
+        /// The current text of this <see cref="Textbox"/>.
+        /// </summary>
         public string Text { get; set; }
+       
+        /// <summary>
+        /// The colour of the text.
+        /// </summary>
         public Color Colour { get; set; } = Color.White;
+
+        /// <summary>
+        /// Indicates whether this <see cref="Textbox"/> is focused.
+        /// </summary>
         public bool Focused { get; set; }
 
+        /// <summary>
+        /// The bounding rectangle of this <see cref="Textbox"/>.
+        /// </summary>
         public RectangleF Rectangle;
 
         private string currentCaret;
         private float caretTimer;
 
+        /// <summary>
+        /// Initializes a new <see cref="Textbox"/>.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        /// <param name="font">The <see cref="SpriteFont"/>.</param>
+        /// <param name="maxCharacters">The maximum amount of characters allowed in the input.</param>
+        /// <param name="defaultText">The default text.</param>
         public Textbox(Vector2 position, SpriteFont font, int maxCharacters = 16, string defaultText = null)
         {
             MaxCharacters = maxCharacters;
@@ -43,6 +81,11 @@ namespace SpaceInvaders
             MainGame.Context.Window.TextInput += OnTextInput;
         }
 
+        /// <summary>
+        /// Called when the game window receives text input.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OnTextInput(object sender, TextInputEventArgs e)
         {
             if (!Focused) return;
@@ -63,6 +106,10 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Update this <see cref="Textbox"/>.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public void Update(float deltaTime)
         {
             if (!Focused)
@@ -83,6 +130,10 @@ namespace SpaceInvaders
             currentCaret = currentCaret == Caret ? string.Empty : Caret;
         }
 
+        /// <summary>
+        /// Render this <see cref="Textbox"/>.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.DrawString(Font, Text + currentCaret, Rectangle.Position, Colour);

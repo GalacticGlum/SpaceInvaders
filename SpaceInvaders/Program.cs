@@ -4,7 +4,7 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
  * Modified Date: 02/05/2019
- * Description: DESCRIPTION
+ * Description: The driver class for the space invaders program.
  */
 
 using System;
@@ -12,7 +12,7 @@ using System;
 namespace SpaceInvaders
 {
     /// <summary>
-    /// The main class.
+    /// The driver class for the space invaders program.
     /// </summary>
     public static class Program
     {
@@ -22,7 +22,7 @@ namespace SpaceInvaders
         [STAThread]
         private static void Main()
         {
-            using (var game = new MainGame())
+            using (MainGame game = new MainGame())
             {
                 game.Run();
             }

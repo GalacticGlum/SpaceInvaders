@@ -4,7 +4,7 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/09/2019
  * Modified Date: 02/23/2019
- * Description: DESCRIPTION
+ * Description: The top-level manager for all projectile instances.
  */
 
 using System;
@@ -18,6 +18,9 @@ using Random = SpaceInvaders.Engine.Random;
 
 namespace SpaceInvaders
 {
+    /// <summary>
+    /// The top-level manager for all projectile instances.
+    /// </summary>
     public class ProjectileController
     {
         private readonly Dictionary<ProjectileType, List<Projectile>> projectilePrototypes;
@@ -39,6 +42,9 @@ namespace SpaceInvaders
         /// </summary>
         private readonly Dictionary<ProjectileType, List<Projectile>> activateProjectiles;
 
+        /// <summary>
+        /// Initializes a new <see cref="ProjectileController"/>.
+        /// </summary>
         public ProjectileController()
         {
             activateProjectiles = new Dictionary<ProjectileType, List<Projectile>>();
@@ -48,6 +54,9 @@ namespace SpaceInvaders
             LoadProjectilePrototypes();
         }
 
+        /// <summary>
+        /// Load all the projectile prototypes.
+        /// </summary>
         private void LoadProjectilePrototypes()
         {
             string jsonSource = MainGame.Context.Content.Load<JsonObject>("BulletTypes").JsonSource;
@@ -68,6 +77,11 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Spawn a projectile from the specified protoype, at the specified position.
+        /// </summary>
+        /// <param name="postion">The position of the new projectile.</param>
+        /// <param name="prototype">The protoype to clone.</param>
         private void CreateProjectile(Vector2 postion, Projectile prototype)
         {
             activateProjectiles[prototype.Type].Add(new Projectile(prototype, postion));
@@ -96,6 +110,10 @@ namespace SpaceInvaders
             CreateProjectile(position, GetRandomProjectilePrototype(ProjectileType.Player));
         }
 
+        /// <summary>
+        /// Fires an enemy projectile.
+        /// </summary>
+        /// <param name="enemy"></param>
         public void CreateEnemyProjectile(Enemy enemy)
         {
             RectangleF enemyRectangle = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).EnemyGroup.GetEnemyWorldRectangle(enemy);
@@ -114,6 +132,10 @@ namespace SpaceInvaders
             destroyList.Add(projectile);
         }
 
+        /// <summary>
+        /// Update all the projectiles.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public void Update(float deltaTime)
         {
             if (MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).IsFrozen) return;
@@ -121,6 +143,9 @@ namespace SpaceInvaders
             CollectProjectiles();
         }
 
+        /// <summary>
+        /// Collect the projectiles that need to be destroyed.
+        /// </summary>
         private void CollectProjectiles()
         {
             foreach (Projectile projectile in destroyList)
@@ -129,11 +154,19 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Render all the projectiles.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             ApplyOperationOnProjectiles(projectile => projectile.Draw(spriteBatch));
         }
 
+        /// <summary>
+        /// Applis an operation on each projectile.
+        /// </summary>
+        /// <param name="operation">The <see cref="Action{T}"/> to apply on each projectile.</param>
         private void ApplyOperationOnProjectiles(Action<Projectile> operation)
         {
             foreach (List<Projectile> projectiles in activateProjectiles.Values)

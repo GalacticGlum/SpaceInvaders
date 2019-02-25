@@ -4,7 +4,7 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
  * Modified Date: 02/24/2019
- * Description: DESCRIPTION
+ * Description: The player controller class.
  */
 
 using Microsoft.Xna.Framework;
@@ -15,6 +15,9 @@ using MathHelper = Microsoft.Xna.Framework.MathHelper;
 
 namespace SpaceInvaders
 {
+    /// <summary>
+    /// The player controller class.
+    /// </summary>
     public class Player
     {
         /// <summary>
@@ -64,6 +67,7 @@ namespace SpaceInvaders
                 int oldLives = lives;
                 lives = MathHelper.Clamp(value, 0, MaxLives);
 
+                // If lives increased, we don't want to start the death animation.
                 if (oldLives <= lives) return;
 
                 GameplayScreen gameplayScreen = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay);
@@ -147,6 +151,10 @@ namespace SpaceInvaders
             boundingRectangle.X = positionX;
         }
 
+        /// <summary>
+        /// Update the player.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public void Update(float deltaTime)
         {
             if (isDeathAnimation)
@@ -170,6 +178,7 @@ namespace SpaceInvaders
             }
 
             GameplayScreen gameplayScreen = MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay);
+
             if (gameplayScreen.IsFrozen) return;
             HandleMovement(deltaTime);
             if (Input.GetKey(Keys.Space))
@@ -178,6 +187,10 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Update the movement.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         private void HandleMovement(float deltaTime)
         {
             float velocity = 0;
@@ -195,6 +208,10 @@ namespace SpaceInvaders
             boundingRectangle.X = newX;
         }
 
+        /// <summary>
+        /// Render the player.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             int frameIndex = deathAnimationFrame ? 2 : 1;
@@ -206,6 +223,11 @@ namespace SpaceInvaders
             spriteBatch.Draw(texture, boundingRectangle.Position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.5f);
         }
 
+        /// <summary>
+        /// Determines whether this <see cref="Player"/> is intersecting with the specified <see cref="RectangleF"/>.
+        /// </summary>
+        /// <param name="rectangle">The <see cref="RectangleF"/>.</param>
+        /// <returns>A boolean value indicating whether an intersection occured.</returns>
         public bool Intersects(RectangleF rectangle) => boundingRectangle.Intersects(rectangle);
     }
 }

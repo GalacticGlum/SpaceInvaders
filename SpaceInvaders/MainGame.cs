@@ -53,6 +53,7 @@ namespace SpaceInvaders
             Content.RootDirectory = "Content";
             Context = this;
 
+            // Preload all the game screens
             gameScreens = new Dictionary<GameScreenType, GameScreen>
             {
                 {GameScreenType.Gameplay, new GameplayScreen()},
@@ -123,23 +124,48 @@ namespace SpaceInvaders
             spriteBatch.End();
         }
 
+        /// <summary>
+        /// Called when the game is closing.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         protected override void OnExiting(object sender, EventArgs args)
         {
+            // Write the logger buffer to the file system
             Logger.FlushMessageBuffer();
         }
 
+        /// <summary>
+        /// Switch the active game screen to the specified <see cref="GameScreenType"/>.
+        /// </summary>
+        /// <param name="type">The new <see cref="GameScreenType"/>.</param>
         public void SwitchScreen(GameScreenType type)
         {
             activeGameScreenType = type;
             gameScreens[activeGameScreenType].OnScreenSwitched();
         }
 
+        /// <summary>
+        /// Reload a game screen of the specified <see cref="GameScreenType"/>.
+        /// <remarks>
+        /// This method reinitializes the game screen by calling its constructor.
+        /// It will reset all data.
+        /// </remarks>
+        /// </summary>
+        /// <typeparam name="T">The type of the game screen.</typeparam>
+        /// <param name="type">The <see cref="GameScreenType"/>.</param>
         public void ReloadScreen<T>(GameScreenType type) where T : GameScreen
         {
             gameScreens[type] = (GameScreen)Activator.CreateInstance(typeof(T));
             gameScreens[type].LoadContent(spriteBatch);
         }
 
+        /// <summary>
+        /// Get a game screen of the specified <see cref="GameScreenType"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the game screen to cast to.</typeparam>
+        /// <param name="type">The type of the <see cref="GameScreenType"/> to retrieve.</param>
+        /// <returns>A <see cref="GameScreen"/> of type <typeparamref name="T"/>.</returns>
         public T GetGameScreen<T>(GameScreenType type) where T : GameScreen  => (T)gameScreens[type];
     }
 }

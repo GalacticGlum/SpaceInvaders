@@ -4,7 +4,9 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
  * Modified Date: 02/12/2019
- * Description: DESCRIPTION
+ * Description: A texture atlas is a large texture that contains many smaller
+ *              textures within it. This class provides a clean interface for
+ *              loading in a texture atlas and extracting data from it.
  */
 
 using System.Collections.Generic;
@@ -18,6 +20,9 @@ using SpaceInvaders.Logging;
 
 namespace SpaceInvaders.Engine
 {
+    /// <summary>
+    /// A single entry in the texture atlas.
+    /// </summary>
     public struct TextureAtlasEntry
     {
         [JsonProperty("name", Required = Required.Always)]
@@ -27,12 +32,26 @@ namespace SpaceInvaders.Engine
         public Rectangle Rectangle { get; set; }
     }
 
+    /// <summary>
+    /// A texture atlas is a large texture that contains many smaller
+    /// textures within it.This class provides a clean interface for
+    /// loading in a texture atlas and extracting data from it.
+    /// </summary>
     public class TextureAtlas
     {
+        /// <summary>
+        /// Gets a <see cref="Texture2D"/> by name.
+        /// </summary>
         public Texture2D this[string name] => Get(name);
 
         private readonly Dictionary<string, Texture2D> textureAtlasEntries;
 
+        /// <summary>
+        /// Initializes a new <see cref="TextureAtlas"/>.
+        /// </summary>
+        /// <param name="atlasContentFilePath">The file path to the texture atlas in the content.</param>
+        /// <param name="graphicsDevice">The graphics device.</param>
+        /// <param name="contentManager">The content manager.</param>
         public TextureAtlas(string atlasContentFilePath, GraphicsDevice graphicsDevice, ContentManager contentManager)
         {
             textureAtlasEntries = new Dictionary<string, Texture2D>();
@@ -50,6 +69,9 @@ namespace SpaceInvaders.Engine
             contentManager.Unload();
         }
 
+        /// <summary>
+        /// Gets a <see cref="Texture2D"/> by name.
+        /// </summary>
         public Texture2D Get(string name)
         {
             if (textureAtlasEntries.ContainsKey(name)) return textureAtlasEntries[name];

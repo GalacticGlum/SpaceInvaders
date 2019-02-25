@@ -4,16 +4,19 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/24/19
  * Modified Date: 02/24/19
- * Description: DESCRIPTION
+ * Description: The game screen that displays the main menu.
  */
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SpaceInvaders.Engine;
 
 namespace SpaceInvaders
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// The game screen that displays the main menu.
+    /// </summary>
     public class MainMenuScreen : GameScreen
     {
         private SpriteBatch spriteBatch;
@@ -22,23 +25,38 @@ namespace SpaceInvaders
         private TextButton gameplayButton;
         private TextButton highscoreButton;
 
+        /// <summary>
+        /// Called when the game screen switches to this screen type.
+        /// </summary>
         public override void OnScreenSwitched()
         {
             MainGame.Context.IsMouseVisible = true;
         }
 
+        /// <summary>
+        /// Load the content for this game screen.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void LoadContent(SpriteBatch spriteBatch)
         {
             this.spriteBatch = spriteBatch;
             spaceInvadersFont = MainGame.Context.Content.Load<SpriteFont>("SpaceInvadersFont");
         }
 
+        /// <summary>
+        /// Update the main menu screen.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             gameplayButton?.Update();
             highscoreButton?.Update();
         }
 
+        /// <summary>
+        /// Render the main menu screen.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             if (gameplayButton == null && highscoreButton == null)
@@ -68,11 +86,17 @@ namespace SpaceInvaders
             highscoreButton?.Draw(spriteBatch);
         }
 
+        /// <summary>
+        /// Called when the highscore button is clicked.
+        /// </summary>
         private static void OnHighscoreButtonClicked()
         {
             MainGame.Context.SwitchScreen(GameScreenType.Highscore);
         }
 
+        /// <summary>
+        /// Called when the gameplay button is clicked.
+        /// </summary>
         private static void OnGameplayButtonClicked()
         {
             // Reload the gameplay screen so that everything is reset.

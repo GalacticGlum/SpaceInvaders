@@ -4,10 +4,9 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/09/2019
  * Modified Date: 02/24/2019
- * Description: DESCRIPTION
+ * Description: A single projectile instance.
  */
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
@@ -15,17 +14,32 @@ using SpaceInvaders.Engine;
 
 namespace SpaceInvaders
 {
+    /// <summary>
+    /// A single projectile instance.
+    /// </summary>
     public class Projectile
     {
+        /// <summary>
+        /// The type of this <see cref="Projectile"/>.
+        /// </summary>
         [JsonProperty("type", Required = Required.Always)]
         public ProjectileType Type { get; private set; }
 
+        /// <summary>
+        /// The velocity of this <see cref="Projectile"/>.
+        /// </summary>
         [JsonProperty("velocity", Required = Required.Always)]
         public Vector2 Velocity { get; private set; }
 
+        /// <summary>
+        /// The texture atlas names of the frames to animate this <see cref="Projectile"/>.
+        /// </summary>
         [JsonProperty("frames", Required = Required.Always)]
         public string[] FrameNames { get; private set; }
 
+        /// <summary>
+        /// The animation rate of this <see cref="Projectile"/>.
+        /// </summary>
         [JsonProperty("animation_rate", Required = Required.Always)]
         public float AnimationRate { get; private set; }
 
@@ -67,6 +81,10 @@ namespace SpaceInvaders
             rectangle = new RectangleF(position, new Vector2(frameTextures[0].Width, frameTextures[0].Height));
         }
 
+        /// <summary>
+        /// Update the projectile.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public void Update(float deltaTime)
         {
             rectangle.Position += Velocity * deltaTime;
@@ -119,6 +137,10 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Animate the projectile.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         private void HandleAnimation(float deltaTime)
         {
             // There is no reason to handle animation logic
@@ -134,6 +156,10 @@ namespace SpaceInvaders
             rectangle.Height = frameTextures[frameCount].Height * MainGame.ResolutionScale;
         }
 
+        /// <summary>
+        /// Render the projectile.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(frameTextures[frameCount], rectangle.Position, null, Color.White, 0, Vector2.Zero, 

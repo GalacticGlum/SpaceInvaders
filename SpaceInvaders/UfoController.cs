@@ -4,10 +4,9 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/08/2019
  * Modified Date: 02/24/2019
- * Description: DESCRIPTION
+ * Description: The UFO spawner and controller.
  */
 
-using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
@@ -17,11 +16,29 @@ using Random = SpaceInvaders.Engine.Random;
 
 namespace SpaceInvaders
 {
+    /// <summary>
+    /// The UFO spawner and controller.
+    /// </summary>
     public class UfoController
     {
+        /// <summary>
+        /// The minimum time, in seconds, that it takes to spawn a UFO.
+        /// </summary>
         private const float MinimumSpawnTime = 3;
+
+        /// <summary>
+        /// The maximum time, in seconds, that it takes to spawn a UFO.
+        /// </summary>
         private const float MaximumSpawnTime = 20;
+
+        /// <summary>
+        /// The horizontal speed of the UFO.
+        /// </summary>
         private const int HorizontalSpeed = 100;
+
+        /// <summary>
+        /// The vertical padding, in pixels, applied to the spawn position of the UFO.
+        /// </summary>
         private const int VerticalSpawnPadding = 10;
 
         /// <summary>
@@ -34,6 +51,9 @@ namespace SpaceInvaders
         /// </summary>
         private const float ScoreFlashBreakTime = 0.10f;
 
+        /// <summary>
+        /// The amount of times the score flashes.
+        /// </summary>
         private const int ScoreFlashFrequency = 3;
 
         private readonly int[] scores;
@@ -52,6 +72,9 @@ namespace SpaceInvaders
         private int scoreFlashCounter;
         private int points;
 
+        /// <summary>
+        /// Initializes a new <see cref="UfoController"/>.
+        /// </summary>
         public UfoController()
         {
             JsonObject jsonObject = MainGame.Context.Content.Load<JsonObject>("UfoScores");
@@ -66,6 +89,10 @@ namespace SpaceInvaders
             flashScore = false;
         }
 
+        /// <summary>
+        /// Update the <see cref="UfoController"/>.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         public void Update(float deltaTime)
         {
             if (MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).IsFrozen) return;
@@ -105,6 +132,10 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Update the flashing effect.
+        /// </summary>
+        /// <param name="deltaTime"></param>
         private void UpdateScoreFlash(float deltaTime)
         {
             flashScoreTimer -= deltaTime;
@@ -124,6 +155,10 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Render the UFO and flash effect.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (flashScore && isScoreVisible)
@@ -136,6 +171,13 @@ namespace SpaceInvaders
                 MainGame.ResolutionScale, SpriteEffects.None, 0.5f);
         }
 
+        /// <summary>
+        /// Destroy the active UFO.
+        /// </summary>
+        /// <param name="playerHit">
+        /// A boolean indicating whether the player hit the UFO.
+        /// If this value is false, no score flash animation occurs.
+        /// </param>
         public void Destroy(bool playerHit = true)
         {
             isUfoActive = false;
@@ -150,6 +192,11 @@ namespace SpaceInvaders
             MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).Player.Score += points;
         }
 
+        /// <summary>
+        /// Determines whether this <see cref="UfoController"/> is intersecting the specified <see cref="RectangleF"/>.
+        /// </summary>
+        /// <param name="rectangle">The <see cref="RectangleF"/>.</param>
+        /// <returns>A boolean value indicating whether an intersection occured.</returns>
         public bool Intersects(RectangleF rectangle) => isUfoActive && BoundingRectangle.Intersects(rectangle);
     }
 }

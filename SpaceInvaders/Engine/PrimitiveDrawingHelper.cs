@@ -4,7 +4,7 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/05/2019
  * Modified Date: 02/10/2019
- * Description: DESCRIPTION
+ * Description: A collection of utilties related to drawing primitives.
  */
 
 using System;
@@ -13,6 +13,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SpaceInvaders.Engine
 {
+    /// <summary>
+    /// A collection of utilties related to drawing primitivess.
+    /// </summary>
     public static class PrimitiveDrawingHelper
     {
         /// <summary>

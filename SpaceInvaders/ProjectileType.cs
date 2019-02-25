@@ -4,11 +4,14 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/09/2019
  * Modified Date: 02/09/2019
- * Description: DESCRIPTION
+ * Description: The type of a projectile.
  */
 
 namespace SpaceInvaders
 {
+    /// <summary>
+    /// The type of a projectile.
+    /// </summary>
     public enum ProjectileType
     {
         Player,

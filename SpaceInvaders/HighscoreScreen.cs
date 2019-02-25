@@ -4,7 +4,7 @@
  * Project Name: SpaceInvaders
  * Creation Date: 02/24/19
  * Modified Date: 02/24/19
- * Description: DESCRIPTION
+ * Description: The game screen that displays the high score.
  */
 
 using System;
@@ -18,10 +18,24 @@ using SpaceInvaders.Logging;
 
 namespace SpaceInvaders
 {
+    /// <summary>
+    /// The game screen that displays the high score.
+    /// </summary>
     public class HighscoreScreen : GameScreen
     {
+        /// <summary>
+        /// The file name of the high score data file.
+        /// </summary>
         private const string HighscoreDataFileName = "highscores.csv";
+
+        /// <summary>
+        /// The horizontal padding, in pixels, of the highscore table.
+        /// </summary>
         private const float HorizontalPadding = MainGame.GameScreenWidth * 0.25f;
+
+        /// <summary>
+        /// The vertical padding, in pixels, of the highscore table.
+        /// </summary>
         private const float VerticalPadding = MainGame.GameScreenHeight * 0.25f;
 
         private SpriteFont spaceInvadersFont;
@@ -30,6 +44,10 @@ namespace SpaceInvaders
         private TextButton exitButton;
         private List<Tuple<string, int>> highscoreData;
 
+        /// <summary>
+        /// Loads the all the content for the highscore screen.
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public override void LoadContent(SpriteBatch spriteBatch)
         {
             this.spriteBatch = spriteBatch;
@@ -40,16 +58,23 @@ namespace SpaceInvaders
             LoadHighscores();
         }
 
+        /// <summary>
+        /// Called when the screen switches to this screen.
+        /// </summary>
         public override void OnScreenSwitched()
         {
             LoadHighscores();
             MainGame.Context.IsMouseVisible = true;
         }
 
+        /// <summary>
+        /// Loads the top 10 highscore data.
+        /// </summary>
         private void LoadHighscores()
         {
+            // Verify the highscore data file and create it if it doesn't exist.
             VerifyHighscoreDataFile();
-
+            
             try
             {
                 string highscoreDataPath = GetHighscoreDataPath();
@@ -78,6 +103,11 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Write a score entry to the highscore data file.
+        /// </summary>
+        /// <param name="name">The name of the player.</param>
+        /// <param name="score">The score of the player.</param>
         public void WriteHighscore(string name, int score)
         {
             VerifyHighscoreDataFile();
@@ -88,11 +118,19 @@ namespace SpaceInvaders
             }
         }
 
+        /// <summary>
+        /// Update the highscore screen.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             exitButton?.Update();
         }
 
+        /// <summary>
+        /// Render the highscore screen.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
             spriteBatch.DrawString(spaceInvadersFont, "NAME", new Vector2(HorizontalPadding, VerticalPadding), ColourHelpers.PureGreen);
@@ -141,11 +179,18 @@ namespace SpaceInvaders
             exitButton?.Draw(spriteBatch);
         }
 
+        /// <summary>
+        /// Called when the exit button is clicked.
+        /// </summary>
         private static void OnExitButtonClicked()
         {
             MainGame.Context.SwitchScreen(GameScreenType.MainMenu);
         }
 
+        /// <summary>
+        /// Ensures that the highscore data file has been created.
+        /// If it does not exist when this method is called, it will be created.
+        /// </summary>
         private static void VerifyHighscoreDataFile()
         {
             string highscoreDataPath = GetHighscoreDataPath();
