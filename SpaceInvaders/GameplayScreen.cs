@@ -168,11 +168,6 @@ namespace SpaceInvaders
         /// <param name="deltaTime"></param>
         private void UpdateGameplay(float deltaTime)
         {
-            if (Input.GetKeyDown(Keys.Q))
-            {
-                Player.Lives -= 1;
-            }
-
             Player.Update(deltaTime);
             EnemyGroup.Update(deltaTime);
             ProjectileController.Update(deltaTime);

@@ -21,6 +21,7 @@ namespace SpaceInvaders
     {
         private SpriteBatch spriteBatch;
         private SpriteFont spaceInvadersFont;
+        private Texture2D logoTexture;
 
         private TextButton gameplayButton;
         private TextButton highscoreButton;
@@ -41,6 +42,7 @@ namespace SpaceInvaders
         {
             this.spriteBatch = spriteBatch;
             spaceInvadersFont = MainGame.Context.Content.Load<SpriteFont>("SpaceInvadersFont");
+            logoTexture = MainGame.Context.Content.Load<Texture2D>("logo");
         }
 
         /// <summary>
@@ -81,6 +83,9 @@ namespace SpaceInvaders
                 gameplayButton.Clicked += OnGameplayButtonClicked;
                 highscoreButton.Clicked += OnHighscoreButtonClicked;
             }
+
+            float logoPositionX = (MainGame.GameScreenWidth - logoTexture.Width) * 0.5f;
+            spriteBatch.Draw(logoTexture, new Vector2(logoPositionX, logoTexture.Height * 0.25f), Color.White);
 
             gameplayButton?.Draw(spriteBatch);
             highscoreButton?.Draw(spriteBatch);
