@@ -148,6 +148,8 @@ namespace SpaceInvaders
 
             Player = new Player();
             BarrierGroup = new BarrierGroup();
+            Player.InitializeHorizontalPosition();
+
             EnemyGroup = new EnemyGroup();
             ProjectileController = new ProjectileController();
             UfoController = new UfoController();

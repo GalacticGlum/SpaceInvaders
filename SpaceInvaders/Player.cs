@@ -91,7 +91,10 @@ namespace SpaceInvaders
         /// </summary>
         public Texture2D Texture { get; }
 
-        private readonly Vector2 startingPosition;
+        /// <summary>
+        /// The starting position of this <see cref="Player"/>.
+        /// </summary>
+        private Vector2 startingPosition;
 
         /// <summary>
         /// The maximum horizontal coordinate that the player cannot go beyond.
@@ -110,16 +113,36 @@ namespace SpaceInvaders
         private float deathAnimationTimer;
         private float deathAnimationFrameTimer;
 
+        /// <summary>
+        /// Initializes a new <see cref="Player"/>.
+        /// </summary>
         public Player()
         {
             Texture = MainGame.Context.MainTextureAtlas["player"];
-            float playerY = MainGame.HorizontalBoundaryY - Texture.Height * MainGame.ResolutionScale - VerticalSpawnOffset;
 
-            startingPosition = new Vector2(MainGame.GameScreenWidth * 0.25f, playerY);
-            boundingRectangle = new RectangleF(startingPosition.X, startingPosition.Y, 
+            float positionY = MainGame.HorizontalBoundaryY - Texture.Height * MainGame.ResolutionScale - VerticalSpawnOffset;
+            startingPosition = new Vector2(0, positionY);
+            boundingRectangle = new RectangleF(startingPosition.X, startingPosition.Y,
                 Texture.Width * MainGame.ResolutionScale, Texture.Height * MainGame.ResolutionScale);
 
             maxHorizontalCoordinate = MainGame.HorizontalBoundaryEnd.X - Texture.Width * MainGame.ResolutionScale;
+        }
+
+        /// <summary>
+        /// Initializes the horizontal position of this <see cref="Player"/>.
+        /// <remarks>
+        /// The <see cref="BarrierGroup"/> initialization requires the vertical position of this <see cref="Player"/>;
+        /// however, this <see cref="Player"/> position initialization requires the horizontal positon of the <see cref="BarrierGroup"/>.
+        /// Hence, we initialize the vertical position of this <see cref="Player"/>, then the <see cref="BarrierGroup"/>, and finally,
+        /// we can initialize the horizontal position of this <see cref="Player"/>.
+        /// </remarks>
+        /// </summary>
+        public void InitializeHorizontalPosition()
+        {
+            float centeringOffset = Texture.Width * MainGame.ResolutionScale * 0.5f;
+            float positionX = MainGame.Context.BarrierGroup[0].Rectangle.Centre.X - centeringOffset;
+            startingPosition.X = positionX;
+            boundingRectangle.X = positionX;
         }
 
         public void Update(float deltaTime)
