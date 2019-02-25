@@ -46,6 +46,19 @@ namespace SpaceInvaders
         public const float TopVerticalBoundary = GameScreenHeight * 0.1f;
 
         /// <summary>
+        /// The gameover header text.
+        /// </summary>
+        private const string GameoverHeaderText = "GAME OVER";
+
+        /// <summary>
+        /// The amount of time, in seconds, that it takes for a character
+        /// to "type" in the gameover header.
+        /// </summary>
+        private const float GameoverTextAnimationTypeTime = 0.1f;
+        private const string HudLivesText = "LIVES";
+        private const string HudScoreText = "SCORE";
+
+        /// <summary>
         /// The starting point of the horizontal boundary line.
         /// </summary>
         public static readonly Vector2 HorizontalBoundaryStart = new Vector2(HorizontalBoundarySize, HorizontalBoundaryY);
@@ -65,6 +78,10 @@ namespace SpaceInvaders
         /// </summary>
         public static MainGame Context { get; private set; }
 
+        /// <summary>
+        /// Indicates whether the game is frozen.
+        /// When the game is frozen, no gameplay is simulated.
+        /// </summary>
         public bool IsFrozen { get; private set; }
 
         /// <summary>
@@ -81,8 +98,12 @@ namespace SpaceInvaders
         private readonly GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
         private SpriteFont hudSpriteFont;
+        private SpriteFont headerSpriteFont;
 
         private float freezeTimer;
+        private bool isGameover;
+        private float gameoverTextTypeTimer = GameoverTextAnimationTypeTime;
+        private int gameoverTextCharacterCount;
 
         public MainGame()
         {
@@ -117,7 +138,10 @@ namespace SpaceInvaders
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             MainTextureAtlas = new TextureAtlas("MainAtlas", GraphicsDevice, Content);
+
+            // Load fonts
             hudSpriteFont = Content.Load<SpriteFont>("SpaceInvadersFont");
+            headerSpriteFont = Content.Load<SpriteFont>("SpaceInvadersFontHeader");
 
             // Load all the enemy types
             EnemyType.Load(Content);
@@ -150,6 +174,7 @@ namespace SpaceInvaders
             }
 
             UpdateGameplay(deltaTime);
+            UpdateGameoverText(deltaTime);
         }
 
         private void UpdateGameplay(float deltaTime)
@@ -165,6 +190,21 @@ namespace SpaceInvaders
             UfoController.Update(deltaTime);
         }
 
+        private void UpdateGameoverText(float deltaTime)
+        {
+            if (!isGameover) return;
+
+            if (gameoverTextCharacterCount < GameoverHeaderText.Length)
+            {
+                gameoverTextTypeTimer -= deltaTime;
+                if (gameoverTextTypeTimer <= 0)
+                {
+                    gameoverTextTypeTimer = GameoverTextAnimationTypeTime;
+                    gameoverTextCharacterCount += 1;
+                }
+            }
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -176,24 +216,32 @@ namespace SpaceInvaders
             spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, SamplerState.PointClamp);
             spriteBatch.DrawLine(HorizontalBoundaryStart, HorizontalBoundaryEnd, ColourHelpers.PureGreen, 2);
 
+            if (!isGameover)
+            {
+                EnemyGroup.Draw(spriteBatch);
+                UfoController.Draw(spriteBatch);
+                ProjectileController.Draw(spriteBatch);
+            }
+
             Player.Draw(spriteBatch);
-            EnemyGroup.Draw(spriteBatch);
             BarrierGroup.Draw(spriteBatch);
-            ProjectileController.Draw(spriteBatch);
-            UfoController.Draw(spriteBatch);
 
             DrawUI();
+            DrawGameoverUI();
 
             spriteBatch.End();
         }
 
+        /// <summary>
+        /// Render the user interface.
+        /// </summary>
         private void DrawUI()
         {
             const int hudElementPadding = 10;
 
-            spriteBatch.DrawString(hudSpriteFont, "SCORE", HudPadding, Color.White);
+            spriteBatch.DrawString(hudSpriteFont, HudScoreText, HudPadding, Color.White);
 
-            Vector2 scoreTextPosition = new Vector2(hudSpriteFont.MeasureString("SCORE").X + hudElementPadding, 0) + HudPadding;
+            Vector2 scoreTextPosition = new Vector2(hudSpriteFont.MeasureString(HudScoreText).X + hudElementPadding, 0) + HudPadding;
             spriteBatch.DrawString(hudSpriteFont, Player.Score.ToString(), scoreTextPosition, ColourHelpers.PureGreen);
             
             Texture2D playerTexture = MainTextureAtlas["player"];
@@ -208,9 +256,9 @@ namespace SpaceInvaders
 
             float livesStartingPositionX = GameScreenWidth - HudPadding.X - livesWidth;
 
-            Vector2 livesTextSize = hudSpriteFont.MeasureString("LIVES");
+            Vector2 livesTextSize = hudSpriteFont.MeasureString(HudLivesText);
             float textPositionX = livesStartingPositionX - hudElementPadding - livesTextSize.X;
-            spriteBatch.DrawString(hudSpriteFont, "LIVES", new Vector2(textPositionX, HudPadding.Y), Color.White);
+            spriteBatch.DrawString(hudSpriteFont, HudLivesText, new Vector2(textPositionX, HudPadding.Y), Color.White);
 
             for (int i = 0; i < Player.MaxLives; ++i)
             {
@@ -226,6 +274,22 @@ namespace SpaceInvaders
         }
 
         /// <summary>
+        /// Render the gameover interface.
+        /// </summary>
+        private void DrawGameoverUI()
+        {
+            if (!isGameover) return;
+
+            if (gameoverTextCharacterCount > 0)
+            {
+                float textPositionX = (GameScreenWidth - headerSpriteFont.MeasureString(GameoverHeaderText).X) * 0.5f;
+                float textPositionY = (GameScreenHeight - headerSpriteFont.LineSpacing) * 0.5f;
+                string text = GameoverHeaderText.Substring(0, gameoverTextCharacterCount);
+                spriteBatch.DrawString(headerSpriteFont, text, new Vector2(textPositionX, textPositionY), Color.White);
+            }
+        }
+
+        /// <summary>
         /// Freezes the game for a specified amount of seconds.
         /// </summary>
         /// <param name="time">The amount of seconds to freeze the game for.
@@ -235,6 +299,15 @@ namespace SpaceInvaders
         {
             freezeTimer = time;
             IsFrozen = true;
+        }
+
+        /// <summary>
+        /// Triggers the gameover state.
+        /// </summary>
+        public void TriggerGameover()
+        {
+            Freeze();
+            isGameover = true;
         }
 
         protected override void OnExiting(object sender, EventArgs args)

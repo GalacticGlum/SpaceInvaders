@@ -9,7 +9,7 @@
     },
     {
         "type": "Enemy",
-        "velocity": "0,250",
+        "velocity": "0,230",
         "frames": [
             "bullet_cross_1",
             "bullet_cross_2",
@@ -22,7 +22,7 @@
     },
     {
         "type": "Enemy",
-        "velocity": "0,300",
+        "velocity": "0,250",
         "frames": [
             "bullet_snake_1",
             "bullet_snake_2"

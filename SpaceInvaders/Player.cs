@@ -63,10 +63,19 @@ namespace SpaceInvaders
                 if (value == lives) return;
                 lives = value;
 
-                MainGame.Context.Freeze(DeathAnimationDuration);
+                if (lives > 0)
+                {
+                    MainGame.Context.Freeze(DeathAnimationDuration);
+                }
+                else
+                {
+                    MainGame.Context.TriggerGameover();
+                }
+
                 isDeathAnimation = true;
                 deathAnimationFrame = false;
-                deathAnimationTimer = DeathAnimationRate;
+                deathAnimationTimer = DeathAnimationDuration;
+                deathAnimationFrameTimer = DeathAnimationRate;
             }
         }
 
@@ -97,6 +106,7 @@ namespace SpaceInvaders
         private bool isDeathAnimation;
         private bool deathAnimationFrame;
         private float deathAnimationTimer;
+        private float deathAnimationFrameTimer;
 
         public Player()
         {
@@ -104,7 +114,9 @@ namespace SpaceInvaders
             float playerY = MainGame.HorizontalBoundaryY - Texture.Height * MainGame.ResolutionScale - VerticalSpawnOffset;
 
             startingPosition = new Vector2(MainGame.GameScreenWidth * 0.25f, playerY);
-            boundingRectangle = new RectangleF(startingPosition.X, startingPosition.Y, Texture.Width, Texture.Height);
+            boundingRectangle = new RectangleF(startingPosition.X, startingPosition.Y, 
+                Texture.Width * MainGame.ResolutionScale, Texture.Height * MainGame.ResolutionScale);
+
             maxHorizontalCoordinate = MainGame.HorizontalBoundaryEnd.X - Texture.Width * MainGame.ResolutionScale;
         }
 
@@ -112,21 +124,25 @@ namespace SpaceInvaders
         {
             if (isDeathAnimation)
             {
+                deathAnimationFrameTimer -= deltaTime;
+                if (deathAnimationFrameTimer <= 0)
+                {
+                    deathAnimationFrameTimer = DeathAnimationRate;
+                    deathAnimationFrame = !deathAnimationFrame;
+                }
+
                 deathAnimationTimer -= deltaTime;
                 if (deathAnimationTimer <= 0)
                 {
-                    deathAnimationTimer = DeathAnimationRate;
-                    deathAnimationFrame = !deathAnimationFrame;
+                    isDeathAnimation = false;
+                    if (lives > 0)
+                    {
+                        boundingRectangle.Position = startingPosition;
+                    }
                 }
             }
 
             if (MainGame.Context.IsFrozen) return;
-            if (isDeathAnimation)
-            {
-                isDeathAnimation = false;
-                boundingRectangle.Position = startingPosition;
-            }
-
             HandleMovement(deltaTime);
             if (Input.GetKey(Keys.Space))
             {
@@ -154,7 +170,11 @@ namespace SpaceInvaders
         public void Draw(SpriteBatch spriteBatch)
         {
             int frameIndex = deathAnimationFrame ? 2 : 1;
-            Texture2D texture = isDeathAnimation ? MainGame.Context.MainTextureAtlas[$"player_death_{frameIndex}"] : Texture;
+
+            // Show the death animation sprites if we are currently playing the death animation,
+            // or if we have no lives left.
+            bool useDeathSprites = isDeathAnimation || lives <= 0;
+            Texture2D texture = useDeathSprites ? MainGame.Context.MainTextureAtlas[$"player_death_{frameIndex}"] : Texture;
             spriteBatch.Draw(texture, boundingRectangle.Position, null, ColourHelpers.PureGreen, 0, Vector2.Zero, MainGame.ResolutionScale, SpriteEffects.None, 0.5f);
         }
 

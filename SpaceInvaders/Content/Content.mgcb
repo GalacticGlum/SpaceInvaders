@@ -63,3 +63,10 @@
 /processor:JsonProcessor
 /build:UfoScores.json
 
+#begin SpaceInvadersFontHeader.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:SpaceInvadersFontHeader.spritefont
+
