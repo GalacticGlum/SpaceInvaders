@@ -56,6 +56,7 @@ namespace SpaceInvaders
 
             LoadProjectilePrototypes();
             shootSoundEffectInstance = MainGame.Context.Content.Load<SoundEffect>("Audio/shoot").CreateInstance();
+            shootSoundEffectInstance.Volume = MainGame.Volume;
         }
 
         /// <summary>

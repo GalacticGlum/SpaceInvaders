@@ -8,6 +8,7 @@
  */
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SpaceInvaders.Engine;
@@ -84,6 +85,7 @@ namespace SpaceInvaders
                 deathAnimationFrame = false;
                 deathAnimationTimer = DeathAnimationDuration;
                 deathAnimationFrameTimer = DeathAnimationRate;
+                playerDeathSoundEffectInstance.Play();
             }
         }
 
@@ -119,6 +121,8 @@ namespace SpaceInvaders
         private float deathAnimationTimer;
         private float deathAnimationFrameTimer;
 
+        private readonly SoundEffectInstance playerDeathSoundEffectInstance;
+
         /// <summary>
         /// Initializes a new <see cref="Player"/>.
         /// </summary>
@@ -132,6 +136,8 @@ namespace SpaceInvaders
                 Texture.Width * MainGame.ResolutionScale, Texture.Height * MainGame.ResolutionScale);
 
             maxHorizontalCoordinate = GameplayScreen.HorizontalBoundaryEnd.X - Texture.Width * MainGame.ResolutionScale;
+            playerDeathSoundEffectInstance = MainGame.Context.Content.Load<SoundEffect>("Audio/explosion").CreateInstance();
+            playerDeathSoundEffectInstance.Volume = 0.5f;
         }
 
         /// <summary>

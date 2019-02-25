@@ -189,6 +189,7 @@ namespace SpaceInvaders
             StartingPosition = boundingRectangle.Position;
 
             enemyDeathSoundEffect = MainGame.Context.Content.Load<SoundEffect>("Audio/invaderkilled").CreateInstance();
+            enemyDeathSoundEffect.Volume = MainGame.Volume;
 
             // Load the movement sound effects
             movementSounds = new SoundEffectInstance[MovementSoundEffectCount];
@@ -196,6 +197,7 @@ namespace SpaceInvaders
             {
                 SoundEffect soundEffect = MainGame.Context.Content.Load<SoundEffect>($"Audio/fastinvader{i}");
                 movementSounds[i - 1] = soundEffect.CreateInstance();
+                movementSounds[i - 1].Volume = MainGame.Volume;
             }
 
             Spawn();

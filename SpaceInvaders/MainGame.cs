@@ -30,7 +30,12 @@ namespace SpaceInvaders
         /// The scale factor of all game sprites.
         /// </summary>
         public const float ResolutionScale = 2.5f;
-    
+
+        /// <summary>
+        /// The intensity of sounds.
+        /// </summary>
+        public const float Volume = 0.25f;
+
         /// <summary>
         /// The current instance of this <see cref="MainGame"/>.
         /// </summary>
