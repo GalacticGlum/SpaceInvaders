@@ -144,6 +144,7 @@ namespace SpaceInvaders
         /// </summary>
         private RectangleF boundingRectangle;
 
+        private readonly SoundEffectInstance enemyDeathSoundEffect;
         private readonly SoundEffectInstance[] movementSounds;
         private int movementSoundCounter;
 
@@ -186,6 +187,8 @@ namespace SpaceInvaders
             const float positionY = MainGame.GameScreenHeight * 0.25f;
             boundingRectangle = new RectangleF(positionX, positionY, totalWidth, totalHeight);
             StartingPosition = boundingRectangle.Position;
+
+            enemyDeathSoundEffect = MainGame.Context.Content.Load<SoundEffect>("Audio/invaderkilled").CreateInstance();
 
             // Load the movement sound effects
             movementSounds = new SoundEffectInstance[MovementSoundEffectCount];
@@ -510,6 +513,7 @@ namespace SpaceInvaders
 
             activeExplosions.Add(new Tuple<Enemy, float>(enemy, ExplosionTime));
             MainGame.Context.GetGameScreen<GameplayScreen>(GameScreenType.Gameplay).Player.Score += enemy.Type.Points;
+            enemyDeathSoundEffect.Play();
         }
 
         /// <summary>

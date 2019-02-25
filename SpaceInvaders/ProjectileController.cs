@@ -10,6 +10,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using SpaceInvaders.ContentPipeline;
@@ -42,6 +43,8 @@ namespace SpaceInvaders
         /// </summary>
         private readonly Dictionary<ProjectileType, List<Projectile>> activateProjectiles;
 
+        private readonly SoundEffectInstance shootSoundEffectInstance;
+
         /// <summary>
         /// Initializes a new <see cref="ProjectileController"/>.
         /// </summary>
@@ -52,6 +55,7 @@ namespace SpaceInvaders
             destroyList = new List<Projectile>();
 
             LoadProjectilePrototypes();
+            shootSoundEffectInstance = MainGame.Context.Content.Load<SoundEffect>("Audio/shoot").CreateInstance();
         }
 
         /// <summary>
@@ -108,6 +112,7 @@ namespace SpaceInvaders
 
             // Get a random player projectile
             CreateProjectile(position, GetRandomProjectilePrototype(ProjectileType.Player));
+            shootSoundEffectInstance.Play();
         }
 
         /// <summary>
@@ -120,6 +125,7 @@ namespace SpaceInvaders
             Vector2 position = enemyRectangle.Position + new Vector2(enemyRectangle.Width / 2, 0);
 
             CreateProjectile(position, GetRandomProjectilePrototype(ProjectileType.Enemy));
+            shootSoundEffectInstance.Play();
         }
 
         /// <summary>
